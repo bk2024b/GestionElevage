@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { signOut } from '../../(auth)/actions'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
+import { formatFCFA } from '@/lib/finances'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -33,6 +34,20 @@ export default async function DashboardPage() {
     .eq('vu', false)
     .order('date_prevue', { ascending: true })
     .limit(3)
+
+  const debutMois = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    .toISOString()
+    .split('T')[0]
+
+  const { data: transactionsMois } = await supabase
+    .from('transactions_financieres')
+    .select('type, montant')
+    .gte('date_transaction', debutMois)
+
+  const beneficeDuMois = (transactionsMois ?? []).reduce(
+    (s, t) => s + (t.type === 'revenu' ? Number(t.montant) : -Number(t.montant)),
+    0
+  )
 
   return (
     <div className="px-6 py-8">
@@ -87,6 +102,15 @@ export default async function DashboardPage() {
           className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
         >
           Voir la reproduction
+        </Link>
+        <Link
+          href="/finances"
+          className="flex items-center justify-between border border-[#1F2B22] text-[#1F2B22] rounded-md py-2 px-4"
+        >
+          <span>Finances</span>
+          <span className={`text-sm font-medium ${beneficeDuMois >= 0 ? '' : 'text-red-700'}`}>
+            {formatFCFA(beneficeDuMois)} ce mois
+          </span>
         </Link>
       </div>
 

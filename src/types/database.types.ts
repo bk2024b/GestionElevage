@@ -60,3 +60,20 @@ export interface Sevrage {
   nb_survivants: number | null
   created_at: string
 }
+
+export type TypeTransaction = 'depense' | 'revenu'
+export type CategorieFinance =
+  | 'aliment' | 'medicament' | 'cage' | 'materiel' | 'transport'
+  | 'vente_lapin' | 'vente_viande' | 'vente_reproducteur' | 'autre'
+
+export interface TransactionFinanciere {
+  id: string
+  user_id: string
+  lapin_id: string | null
+  type: TypeTransaction
+  categorie: CategorieFinance
+  montant: number
+  description: string | null
+  date_transaction: string
+  created_at: string
+}
