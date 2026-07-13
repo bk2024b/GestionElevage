@@ -9,12 +9,30 @@ export async function creerMiseBas(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const accouplementId = formData.get('accouplement_id') as string
-  const femelleId = formData.get('femelle_id') as string
+  const accouplementId = (formData.get('accouplement_id') as string) || null
+  let femelleId = (formData.get('femelle_id') as string) || null
+
+  // Si aucune femelle saisie manuellement, la récupérer depuis l'accouplement lié
+  if (!femelleId && accouplementId) {
+    const { data: accouplement, error: errAccouplement } = await supabase
+      .from('accouplements')
+      .select('femelle_id')
+      .eq('id', accouplementId)
+      .single()
+
+    if (errAccouplement || !accouplement) {
+      redirect(`/mises-bas/nouveau?error=${encodeURIComponent('Accouplement introuvable')}`)
+    }
+    femelleId = accouplement!.femelle_id
+  }
+
+  if (!femelleId) {
+    redirect(`/mises-bas/nouveau?error=${encodeURIComponent('Il faut choisir un accouplement ou indiquer une femelle')}`)
+  }
 
   const { error } = await supabase.from('mises_bas').insert({
     user_id: user.id,
-    accouplement_id: accouplementId || null,
+    accouplement_id: accouplementId,
     femelle_id: femelleId,
     date_misebas: formData.get('date_misebas'),
     nb_lapereaux: Number(formData.get('nb_lapereaux') || 0),
