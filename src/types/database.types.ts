@@ -18,3 +18,20 @@ export interface Lapin {
   notes: string | null
   created_at: string
 }
+
+export type StatutReproduction = 'en_cours' | 'confirmee' | 'echouee' | 'terminee'
+
+export interface Accouplement {
+  id: string
+  user_id: string
+  femelle_id: string
+  male_id: string
+  date_accouplement: string
+  date_nid_prevue: string
+  date_misebas_prevue: string
+  statut: StatutReproduction
+  notes: string | null
+  created_at: string
+  femelle?: Lapin
+  male?: Lapin
+}
