@@ -77,3 +77,12 @@ export interface TransactionFinanciere {
   date_transaction: string
   created_at: string
 }
+
+export interface Profil {
+  id: string
+  nom: string
+  nom_elevage: string
+  telephone: string | null
+  adresse: string | null
+  created_at: string
+}

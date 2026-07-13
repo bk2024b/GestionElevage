@@ -112,6 +112,18 @@ export default async function DashboardPage() {
             {formatFCFA(beneficeDuMois)} ce mois
           </span>
         </Link>
+        <Link
+          href="/statistiques"
+          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
+        >
+          Statistiques et export
+        </Link>
+        <Link
+          href="/parametres"
+          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
+        >
+          Paramètres
+        </Link>
       </div>
 
       <form action={signOut}>
