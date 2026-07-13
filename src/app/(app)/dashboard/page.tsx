@@ -90,6 +90,7 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      <p className="text-xs text-gray-400 mb-2">Élevage</p>
       <div className="flex flex-col gap-2 mb-6">
         <Link
           href="/lapins"
@@ -103,6 +104,28 @@ export default async function DashboardPage() {
         >
           Voir la reproduction
         </Link>
+        <Link
+          href="/sante"
+          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
+        >
+          Santé et soins
+        </Link>
+        <Link
+          href="/alimentation"
+          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
+        >
+          Alimentation
+        </Link>
+        <Link
+          href="/calendrier"
+          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
+        >
+          Calendrier
+        </Link>
+      </div>
+
+      <p className="text-xs text-gray-400 mb-2">Gestion</p>
+      <div className="flex flex-col gap-2 mb-6">
         <Link
           href="/finances"
           className="flex items-center justify-between border border-[#1F2B22] text-[#1F2B22] rounded-md py-2 px-4"

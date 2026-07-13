@@ -86,3 +86,19 @@ export interface Profil {
   adresse: string | null
   created_at: string
 }
+
+export type TypeSoin = 'maladie' | 'traitement' | 'vaccin' | 'controle_veto'
+
+export interface Soin {
+  id: string
+  lapin_id: string
+  user_id: string
+  type: TypeSoin
+  libelle: string
+  date_soin: string
+  cout: number | null
+  notes: string | null
+  created_at: string
+  lapin?: Lapin
+}
+
