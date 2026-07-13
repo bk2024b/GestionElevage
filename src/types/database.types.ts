@@ -35,3 +35,28 @@ export interface Accouplement {
   femelle?: Lapin
   male?: Lapin
 }
+
+export interface MiseBas {
+  id: string
+  accouplement_id: string | null
+  femelle_id: string
+  user_id: string
+  date_misebas: string
+  nb_lapereaux: number
+  nb_males: number
+  nb_femelles: number
+  nb_morts_nes: number
+  observations: string | null
+  date_sevrage_prevue: string
+  created_at: string
+  femelle?: Lapin
+}
+
+export interface Sevrage {
+  id: string
+  mise_bas_id: string
+  date_sevrage: string
+  poids_moyen: number | null
+  nb_survivants: number | null
+  created_at: string
+}
