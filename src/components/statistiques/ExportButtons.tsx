@@ -14,32 +14,32 @@ interface StatsData {
 
 export function ExportButtons({ stats, nomElevage }: { stats: StatsData; nomElevage: string }) {
   async function exporterPDF() {
-    const { default: jsPDF } = await import('jspdf')
-    await import('jspdf-autotable')
-    const doc = new jsPDF()
+  const { default: jsPDF } = await import('jspdf')
+  const { default: autoTable } = await import('jspdf-autotable')
+  const doc = new jsPDF()
 
-    doc.setFontSize(16)
-    doc.text(nomElevage, 14, 18)
-    doc.setFontSize(11)
-    doc.text(`Rapport statistique — ${new Date().toLocaleDateString('fr-FR')}`, 14, 26)
+  doc.setFontSize(16)
+  doc.text(nomElevage, 14, 18)
+  doc.setFontSize(11)
+  doc.text(`Rapport statistique — ${new Date().toLocaleDateString('fr-FR')}`, 14, 26)
 
-    ;(doc as any).autoTable({
-      startY: 34,
-      head: [['Indicateur', 'Valeur']],
-      body: [
-        ['Total lapins', String(stats.totalLapins)],
-        ['Accouplements', String(stats.totalAccouplements)],
-        ['Taux de reproduction', `${stats.tauxReproduction} %`],
-        ['Lapereaux nés', String(stats.totalNes)],
-        ['Taux de mortalité', `${stats.tauxMortalite} %`],
-        ['Revenus', `${stats.revenus.toLocaleString('fr-FR')} F`],
-        ['Dépenses', `${stats.depenses.toLocaleString('fr-FR')} F`],
-        ['Bénéfice', `${stats.benefice.toLocaleString('fr-FR')} F`],
-      ],
-    })
+  autoTable(doc, {
+    startY: 34,
+    head: [['Indicateur', 'Valeur']],
+    body: [
+      ['Total lapins', String(stats.totalLapins)],
+      ['Accouplements', String(stats.totalAccouplements)],
+      ['Taux de reproduction', `${stats.tauxReproduction} %`],
+      ['Lapereaux nés', String(stats.totalNes)],
+      ['Taux de mortalité', `${stats.tauxMortalite} %`],
+      ['Revenus', `${stats.revenus.toLocaleString('fr-FR')} F`],
+      ['Dépenses', `${stats.depenses.toLocaleString('fr-FR')} F`],
+      ['Bénéfice', `${stats.benefice.toLocaleString('fr-FR')} F`],
+    ],
+  })
 
-    doc.save(`statistiques-${new Date().toISOString().split('T')[0]}.pdf`)
-  }
+  doc.save(`statistiques-${new Date().toISOString().split('T')[0]}.pdf`)
+}
 
   async function exporterExcel() {
     const XLSX = await import('xlsx')
