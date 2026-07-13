@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { signOut } from '../../(auth)/actions'
+import { EarTagBadge } from '@/components/lapins/EarTagBadge'
+import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -20,6 +22,18 @@ export default async function DashboardPage() {
     .select('*', { count: 'exact', head: true })
     .in('statut', ['en_cours', 'confirmee'])
 
+  const { count: nbRappels } = await supabase
+    .from('rappels')
+    .select('*', { count: 'exact', head: true })
+    .eq('vu', false)
+
+  const { data: rappelsUrgents } = await supabase
+    .from('rappels')
+    .select(`*, lapin:lapin_id(identifiant, sexe)`)
+    .eq('vu', false)
+    .order('date_prevue', { ascending: true })
+    .limit(3)
+
   return (
     <div className="px-6 py-8">
       <h1 className="text-xl font-medium mb-1">Bienvenue</h1>
@@ -39,6 +53,27 @@ export default async function DashboardPage() {
           <p className="text-2xl font-medium">{nbGestantes ?? 0}</p>
         </div>
       </div>
+
+      {rappelsUrgents && rappelsUrgents.length > 0 && (
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-sm text-gray-600">À faire</p>
+            {nbRappels ? <span className="text-xs text-gray-400">{nbRappels} au total</span> : null}
+          </div>
+          <div className="flex flex-col gap-2">
+            {rappelsUrgents.map((r: any) => (
+              <div key={r.id} className="flex items-center gap-2 bg-white border rounded-md px-3 py-2">
+                {r.lapin && <EarTagBadge identifiant={r.lapin.identifiant} sexe={r.lapin.sexe} />}
+                <span className="text-sm flex-1">{LABEL_TYPE_RAPPEL[r.type] || r.message}</span>
+                <span className="text-xs text-gray-500">{new Date(r.date_prevue).toLocaleDateString('fr-FR')}</span>
+              </div>
+            ))}
+          </div>
+          <Link href="/rappels" className="text-xs text-gray-500 mt-2 inline-block">
+            Voir tous les rappels →
+          </Link>
+        </div>
+      )}
 
       <div className="flex flex-col gap-2 mb-6">
         <Link

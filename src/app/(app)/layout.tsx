@@ -15,8 +15,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <nav className="fixed bottom-0 left-0 right-0 flex border-t bg-white">
         <Link href="/dashboard" className="flex-1 text-center py-3 text-sm">Accueil</Link>
         <Link href="/lapins" className="flex-1 text-center py-3 text-sm">Lapins</Link>
-        <Link href="/reproduction" className="flex-1 text-center py-3 text-sm">Reproduction</Link>
-        <Link href="/parametres" className="flex-1 text-center py-3 text-sm">Réglages</Link>
+        <Link href="/reproduction" className="flex-1 text-center py-3 text-sm">Reprod.</Link>
+        <Link href="/mises-bas" className="flex-1 text-center py-3 text-sm">Naissances</Link>
+        <Link href="/rappels" className="flex-1 text-center py-3 text-sm">Rappels</Link>
       </nav>
     </div>
   )
