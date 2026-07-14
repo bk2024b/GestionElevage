@@ -44,10 +44,11 @@ export interface MiseBas {
   femelle_id: string
   user_id: string
   date_misebas: string
-  nb_lapereaux: number
-  nb_males: number
-  nb_femelles: number
-  nb_morts_nes: number
+  nes_vivants: number
+  nes_morts: number
+  adoptes: number
+  retires: number
+  lapereaux_identifies: boolean
   observations: string | null
   date_sevrage_prevue: string
   created_at: string

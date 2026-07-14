@@ -26,12 +26,10 @@ export default async function NouvelleMiseBasPage({
       <form action={creerMiseBas} className="flex flex-col gap-3">
         <label className="text-sm text-gray-600">
           Accouplement lié
-          <select name="accouplement_id" defaultValue={accouplement_id} className="border rounded-md px-3 py-2 w-full mt-1"
-            onChange={undefined}
-          >
+          <select name="accouplement_id" defaultValue={accouplement_id} className="border rounded-md px-3 py-2 w-full mt-1">
             <option value="">— Aucun (mise bas manuelle) —</option>
             {accouplements?.map((a: any) => (
-              <option key={a.id} value={a.id} data-femelle={a.femelle_id}>
+              <option key={a.id} value={a.id}>
                 {a.femelle.identifiant} — prévue le {new Date(a.date_misebas_prevue).toLocaleDateString('fr-FR')}
               </option>
             ))}
@@ -54,12 +52,26 @@ export default async function NouvelleMiseBasPage({
           />
         </label>
 
-        <div className="grid grid-cols-3 gap-2">
-          <input name="nb_males" type="number" placeholder="Mâles" className="border rounded-md px-3 py-2" />
-          <input name="nb_femelles" type="number" placeholder="Femelles" className="border rounded-md px-3 py-2" />
-          <input name="nb_morts_nes" type="number" placeholder="Morts-nés" className="border rounded-md px-3 py-2" />
+        <p className="text-xs text-gray-500 -mb-1">Le sexe n'est pas distinguable à la naissance — il sera renseigné plus tard, à l'identification.</p>
+
+        <div className="grid grid-cols-2 gap-2">
+          <label className="text-xs text-gray-600">
+            Nés vivants
+            <input name="nes_vivants" type="number" defaultValue={0} required className="border rounded-md px-3 py-2 w-full mt-1" />
+          </label>
+          <label className="text-xs text-gray-600">
+            Nés morts
+            <input name="nes_morts" type="number" defaultValue={0} className="border rounded-md px-3 py-2 w-full mt-1" />
+          </label>
+          <label className="text-xs text-gray-600">
+            Adoptés
+            <input name="adoptes" type="number" defaultValue={0} className="border rounded-md px-3 py-2 w-full mt-1" />
+          </label>
+          <label className="text-xs text-gray-600">
+            Retirés
+            <input name="retires" type="number" defaultValue={0} className="border rounded-md px-3 py-2 w-full mt-1" />
+          </label>
         </div>
-        <input name="nb_lapereaux" type="number" placeholder="Total lapereaux vivants" className="border rounded-md px-3 py-2" />
 
         <textarea name="observations" placeholder="Observations" className="border rounded-md px-3 py-2" rows={2} />
 
