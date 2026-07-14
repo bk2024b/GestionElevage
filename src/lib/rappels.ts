@@ -3,6 +3,7 @@ export const LABEL_TYPE_RAPPEL: Record<string, string> = {
   misebas: 'Mise bas prévue',
   sevrage: 'Sevrage',
   soin: 'Soin à faire',
+  palpation: 'Palpation à effectuer',
   autre: 'Rappel',
 }
 
