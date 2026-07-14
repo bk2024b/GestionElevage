@@ -16,6 +16,8 @@ export interface Lapin {
   statut: StatutLapin
   date_statut: string | null
   notes: string | null
+  age_premiere_saillie: number | null
+  numero_cage: string | null
   created_at: string
 }
 

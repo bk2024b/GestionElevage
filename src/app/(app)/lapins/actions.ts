@@ -25,6 +25,8 @@ export async function creerLapin(formData: FormData) {
     mere_id: formData.get('mere_id') || null,
     pere_id: formData.get('pere_id') || null,
     notes: formData.get('notes') || null,
+    age_premiere_saillie: formData.get('age_premiere_saillie') ? Number(formData.get('age_premiere_saillie')) : null,
+    numero_cage: formData.get('numero_cage') || null,
   })
 
   if (error) {
@@ -48,6 +50,8 @@ export async function modifierLapin(id: string, formData: FormData) {
       couleur: formData.get('couleur') || null,
       statut: formData.get('statut'),
       notes: formData.get('notes') || null,
+      age_premiere_saillie: formData.get('age_premiere_saillie') ? Number(formData.get('age_premiere_saillie')) : null,
+      numero_cage: formData.get('numero_cage') || null,
     })
     .eq('id', id)
 

@@ -37,6 +37,12 @@ export default async function FicheLapinPage({
         <input name="date_naissance" type="date" defaultValue={lapin.date_naissance ?? ''} className="border rounded-md px-3 py-2" />
         <input name="poids_actuel" type="number" step="0.1" defaultValue={lapin.poids_actuel ?? ''} placeholder="Poids (kg)" className="border rounded-md px-3 py-2" />
         <input name="couleur" type="text" defaultValue={lapin.couleur ?? ''} placeholder="Couleur" className="border rounded-md px-3 py-2" />
+        <input name="numero_cage" type="text" defaultValue={lapin.numero_cage ?? ''} placeholder="Numéro de cage" className="border rounded-md px-3 py-2" />
+
+        <label className="text-sm text-gray-600">
+          Âge 1ère saillie prévu (mois)
+          <input name="age_premiere_saillie" type="number" defaultValue={lapin.age_premiere_saillie ?? ''} className="border rounded-md px-3 py-2 w-full mt-1" />
+        </label>
 
         <label className="text-sm text-gray-600">
           Statut

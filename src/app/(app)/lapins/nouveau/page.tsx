@@ -34,6 +34,13 @@ export default async function NouveauLapinPage({
 
         <input name="poids_actuel" type="number" step="0.1" placeholder="Poids (kg)" className="border rounded-md px-3 py-2" />
         <input name="couleur" type="text" placeholder="Couleur" className="border rounded-md px-3 py-2" />
+        <input name="numero_cage" type="text" placeholder="Numéro de cage" className="border rounded-md px-3 py-2" />
+
+        <label className="text-sm text-gray-600">
+          Âge 1ère saillie prévu (mois)
+          <input name="age_premiere_saillie" type="number" placeholder="Ex: 6" className="border rounded-md px-3 py-2 w-full mt-1" />
+        </label>
+
         <textarea name="notes" placeholder="Notes" className="border rounded-md px-3 py-2" rows={3} />
 
         <button type="submit" className="bg-[#1F2B22] text-white rounded-md py-2 mt-2">
