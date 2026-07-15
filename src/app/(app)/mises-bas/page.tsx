@@ -3,6 +3,18 @@ import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { enregistrerSevrage, identifierLapereaux } from './actions'
 import Link from 'next/link'
 
+function sevrageDisponible(dateMisebas: string) {
+  const dateMinimum = new Date(dateMisebas)
+  dateMinimum.setDate(dateMinimum.getDate() + 30)
+  return new Date() >= dateMinimum
+}
+
+function dateSevrageMinimum(dateMisebas: string) {
+  const d = new Date(dateMisebas)
+  d.setDate(d.getDate() + 30)
+  return d.toISOString().split('T')[0]
+}
+
 export default async function MisesBasPage() {
   const supabase = await createClient()
 
@@ -26,6 +38,7 @@ export default async function MisesBasPage() {
           const enregistrerAvecId = enregistrerSevrage.bind(null, m.id)
           const identifierAvecId = identifierLapereaux.bind(null, m.id)
           const disponibles = m.nes_vivants + m.adoptes - m.retires
+          const peutSevrer = sevrageDisponible(m.date_misebas)
 
           return (
             <div key={m.id} className="bg-white border rounded-md px-4 py-3">
@@ -65,19 +78,30 @@ export default async function MisesBasPage() {
                 <div className="text-xs bg-green-50 text-green-800 rounded-md px-2 py-1.5 mt-2">
                   Sevré le {new Date(m.sevrages[0].date_sevrage).toLocaleDateString('fr-FR')}
                   {m.sevrages[0].nb_survivants != null && ` — ${m.sevrages[0].nb_survivants} survivants`}
+                  {m.sevrages[0].poids_moyen != null && ` — ${m.sevrages[0].poids_moyen} kg moyen`}
                 </div>
-              ) : (
+              ) : peutSevrer ? (
                 <form action={enregistrerAvecId} className="flex flex-col gap-2 border-t pt-2 mt-2">
-                  <p className="text-xs text-gray-500">Enregistrer le sevrage</p>
+                  <p className="text-xs text-gray-500">Enregistrer le sevrage (30 jours minimum atteints)</p>
                   <div className="grid grid-cols-2 gap-2">
-                    <input name="date_sevrage" type="date" defaultValue={new Date().toISOString().split('T')[0]} className="border rounded-md px-2 py-1 text-xs" />
-                    <input name="nb_survivants" type="number" placeholder="Survivants" className="border rounded-md px-2 py-1 text-xs" />
+                    <input
+                      name="date_sevrage"
+                      type="date"
+                      min={dateSevrageMinimum(m.date_misebas)}
+                      defaultValue={new Date().toISOString().split('T')[0]}
+                      className="border rounded-md px-2 py-1 text-xs"
+                    />
+                    <input name="nb_survivants" type="number" max={disponibles} placeholder={`Survivants (max ${disponibles})`} className="border rounded-md px-2 py-1 text-xs" />
                   </div>
                   <input name="poids_moyen" type="number" step="0.01" placeholder="Poids moyen (kg)" className="border rounded-md px-2 py-1 text-xs" />
                   <button type="submit" className="text-xs bg-gray-100 px-2 py-1 rounded-md">
                     Valider le sevrage
                   </button>
                 </form>
+              ) : (
+                <p className="text-xs text-amber-700 bg-amber-50 rounded-md px-2 py-1.5 mt-2">
+                  Sevrage possible à partir du {new Date(dateSevrageMinimum(m.date_misebas)).toLocaleDateString('fr-FR')}
+                </p>
               )}
             </div>
           )

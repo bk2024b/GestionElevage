@@ -55,11 +55,36 @@ export async function creerMiseBas(formData: FormData) {
 export async function enregistrerSevrage(miseBasId: string, formData: FormData) {
   const supabase = await createClient()
 
+  const { data: miseBas } = await supabase
+    .from('mises_bas')
+    .select('date_misebas, nes_vivants, adoptes, retires')
+    .eq('id', miseBasId)
+    .single()
+
+  if (!miseBas) {
+    redirect(`/mises-bas?error=${encodeURIComponent('Mise bas introuvable')}`)
+  }
+
+  const dateSevrage = formData.get('date_sevrage') as string
+  const dateMinimum = new Date(miseBas!.date_misebas)
+  dateMinimum.setDate(dateMinimum.getDate() + 30)
+
+  if (new Date(dateSevrage) < dateMinimum) {
+    redirect(`/mises-bas?error=${encodeURIComponent('Le sevrage doit avoir lieu au moins 30 jours après la mise bas')}`)
+  }
+
+  const disponibles = miseBas!.nes_vivants + miseBas!.adoptes - miseBas!.retires
+  const nbSurvivants = Number(formData.get('nb_survivants') || 0)
+
+  if (nbSurvivants > disponibles) {
+    redirect(`/mises-bas?error=${encodeURIComponent(`Le nombre de survivants (${nbSurvivants}) dépasse les lapereaux disponibles (${disponibles})`)}`)
+  }
+
   const { error } = await supabase.from('sevrages').insert({
     mise_bas_id: miseBasId,
-    date_sevrage: formData.get('date_sevrage'),
+    date_sevrage: dateSevrage,
     poids_moyen: formData.get('poids_moyen') ? Number(formData.get('poids_moyen')) : null,
-    nb_survivants: formData.get('nb_survivants') ? Number(formData.get('nb_survivants')) : null,
+    nb_survivants: nbSurvivants,
   })
 
   if (error) {
