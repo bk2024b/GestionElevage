@@ -4,13 +4,26 @@ import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
 import { formatFCFA } from '@/lib/finances'
 import { classifierLapin } from '@/lib/lapins'
-import { StatCard, Card } from '@/components/ui/Card'
-import { ButtonLink, Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { QuickAction } from '@/components/ui/QuickAction'
 import Link from 'next/link'
+import {
+  Rabbit,
+  HeartPulse,
+  Baby,
+  Stethoscope,
+  Wheat,
+  CalendarDays,
+  Wallet,
+  BarChart3,
+  Settings,
+  LogOut,
+} from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const { data: profil } = await supabase.from('profils').select('nom, nom_elevage').eq('id', user!.id).single()
 
   const { data: lapinsActifs } = await supabase
     .from('lapins')
@@ -67,32 +80,78 @@ export default async function DashboardPage() {
     0
   )
 
+  const initiales = (profil?.nom_elevage ?? 'EL')
+    .split(' ')
+    .map((m) => m[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+
+  const dateAujourdhui = new Date().toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+
   return (
     <div className="px-5 py-6 max-w-md mx-auto">
-      <h1 className="text-xl font-display font-semibold mb-1">Bienvenue</h1>
-      <p className="text-sm text-ink-soft mb-6">{user?.email}</p>
-
-      <div className="grid grid-cols-2 gap-3 mb-3">
-        <StatCard label="Total lapins" value={nbLapinsTotal ?? 0} />
-        <StatCard label="Jeunes lapins" value={nbJeunes} />
+      {/* En-tête élevage */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <span className="w-11 h-11 shrink-0 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-sm">
+            {initiales}
+          </span>
+          <div>
+            <h1 className="text-lg font-display font-semibold leading-tight">
+              {profil?.nom_elevage ?? 'Mon élevage'}
+            </h1>
+            <p className="text-xs text-ink-soft capitalize">
+              Bonjour {profil?.nom ?? ''} · {dateAujourdhui}
+            </p>
+          </div>
+        </div>
+        <form action={signOut}>
+          <button type="submit" className="tap w-9 h-9 flex items-center justify-center rounded-card border border-line text-ink-soft">
+            <LogOut size={16} />
+          </button>
+        </form>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <StatCard label="Femelles reproductrices" value={nbFemellesReproductrices} />
-        <StatCard label="Mâles reproducteurs" value={nbMalesReproducteurs} />
-      </div>
+      {/* Panneau de synthèse */}
+      <Card className="mb-6 !p-0 overflow-hidden">
+        <div className="grid grid-cols-2">
+          <div className="px-4 py-3 border-b border-r border-line">
+            <p className="text-xs text-ink-soft">Total lapins</p>
+            <p className="text-xl font-display font-semibold">{nbLapinsTotal ?? 0}</p>
+          </div>
+          <div className="px-4 py-3 border-b border-line">
+            <p className="text-xs text-ink-soft">Jeunes lapins</p>
+            <p className="text-xl font-display font-semibold">{nbJeunes}</p>
+          </div>
+          <div className="px-4 py-3 border-r border-line">
+            <p className="text-xs text-ink-soft">Femelles reprod.</p>
+            <p className="text-xl font-display font-semibold">{nbFemellesReproductrices}</p>
+          </div>
+          <div className="px-4 py-3">
+            <p className="text-xs text-ink-soft">Mâles reprod.</p>
+            <p className="text-xl font-display font-semibold">{nbMalesReproducteurs}</p>
+          </div>
+        </div>
+      </Card>
 
       {(nbGestantes ?? 0) > 0 && (
-        <div className="mb-6">
-          <StatCard label="Gestantes en cours" value={nbGestantes ?? 0} />
-        </div>
+        <Card className="mb-6 flex items-center justify-between bg-accent-soft border-accent/20">
+          <span className="text-sm text-ink">Gestations en cours</span>
+          <span className="text-lg font-display font-semibold text-accent">{nbGestantes}</span>
+        </Card>
       )}
 
+      {/* Rappels */}
       {rappelsUrgents && rappelsUrgents.length > 0 && (
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
-            <p className="text-sm text-ink-soft">À faire</p>
-            {nbRappels ? <span className="text-xs text-ink-soft/70">{nbRappels} au total</span> : null}
+            <p className="text-sm font-medium">À faire</p>
+            {nbRappels ? <span className="text-xs text-ink-soft">{nbRappels} au total</span> : null}
           </div>
           <div className="flex flex-col gap-2">
             {rappelsUrgents.map((r: any) => (
@@ -109,34 +168,35 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <p className="text-xs text-ink-soft/70 mb-2">Élevage</p>
-      <div className="flex flex-col gap-2 mb-6">
-        <ButtonLink href="/lapins" variante="primaire">Voir mes lapins</ButtonLink>
-        <ButtonLink href="/reproduction" variante="secondaire">Voir la reproduction</ButtonLink>
-        <ButtonLink href="/mises-bas" variante="secondaire">Naissances et sevrages</ButtonLink>
-        <ButtonLink href="/sante" variante="secondaire">Santé et soins</ButtonLink>
-        <ButtonLink href="/alimentation" variante="secondaire">Alimentation</ButtonLink>
-        <ButtonLink href="/calendrier" variante="secondaire">Calendrier</ButtonLink>
-      </div>
-
-      <p className="text-xs text-ink-soft/70 mb-2">Gestion</p>
-      <div className="flex flex-col gap-2 mb-6">
-        <Link
-          href="/finances"
-          className="tap flex items-center justify-between border border-ink text-ink rounded-card py-2.5 px-4 text-sm"
-        >
-          <span>Finances</span>
-          <span className={`font-medium ${beneficeDuMois >= 0 ? '' : 'text-danger'}`}>
-            {formatFCFA(beneficeDuMois)} ce mois
+      {/* Finances rapide */}
+      <Link href="/finances" className="tap block mb-6">
+        <Card className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Wallet size={18} className="text-ink-soft" />
+            <span className="text-sm">Bénéfice ce mois</span>
+          </div>
+          <span className={`text-sm font-medium ${beneficeDuMois >= 0 ? 'text-success' : 'text-danger'}`}>
+            {formatFCFA(beneficeDuMois)}
           </span>
-        </Link>
-        <ButtonLink href="/statistiques" variante="secondaire">Statistiques et export</ButtonLink>
-        <ButtonLink href="/parametres" variante="secondaire">Paramètres</ButtonLink>
+        </Card>
+      </Link>
+
+      {/* Actions rapides */}
+      <p className="text-xs text-ink-soft mb-1">Élevage</p>
+      <div className="grid grid-cols-3 gap-1 mb-4">
+        <QuickAction href="/lapins" icon={Rabbit} label="Lapins" />
+        <QuickAction href="/reproduction" icon={HeartPulse} label="Reprod." />
+        <QuickAction href="/mises-bas" icon={Baby} label="Naissances" />
+        <QuickAction href="/sante" icon={Stethoscope} label="Santé" />
+        <QuickAction href="/alimentation" icon={Wheat} label="Aliment." />
+        <QuickAction href="/calendrier" icon={CalendarDays} label="Calendrier" />
       </div>
 
-      <form action={signOut}>
-        <Button variante="danger" className="w-full">Se déconnecter</Button>
-      </form>
+      <p className="text-xs text-ink-soft mb-1">Gestion</p>
+      <div className="grid grid-cols-3 gap-1">
+        <QuickAction href="/statistiques" icon={BarChart3} label="Statistiques" />
+        <QuickAction href="/parametres" icon={Settings} label="Paramètres" />
+      </div>
     </div>
   )
 }
