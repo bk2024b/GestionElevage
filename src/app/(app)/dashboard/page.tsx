@@ -82,7 +82,7 @@ export default async function DashboardPage() {
 
   const initiales = (profil?.nom_elevage ?? 'EL')
     .split(' ')
-    .map((m) => m[0])
+    .map((m: string) => m[0])
     .join('')
     .slice(0, 2)
     .toUpperCase()
