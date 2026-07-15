@@ -1,4 +1,6 @@
 import { creerAlimentation } from '../actions'
+import { Input, Select, Field } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 
 export default async function NouvelleAlimentationPage({
   searchParams,
@@ -8,42 +10,39 @@ export default async function NouvelleAlimentationPage({
   const { error } = await searchParams
 
   return (
-    <div className="px-6 py-6 max-w-md">
-      <h1 className="text-xl font-medium mb-4">Nouvelle distribution</h1>
+    <div className="px-5 py-6 max-w-md mx-auto">
+      <h1 className="text-xl font-display font-semibold mb-5">Nouvelle distribution</h1>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2 mb-3">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
       )}
 
       <form action={creerAlimentation} className="flex flex-col gap-3">
-        <label className="text-sm text-gray-600">
-          Type d'aliment
-          <select name="type_aliment" required className="border rounded-md px-3 py-2 w-full mt-1">
+        <Field label="Type d'aliment">
+          <Select name="type_aliment" required>
             <option value="Granulés">Granulés</option>
             <option value="Foin">Foin</option>
             <option value="Verdure">Verdure</option>
             <option value="Complément">Complément</option>
             <option value="Autre">Autre</option>
-          </select>
-        </label>
+          </Select>
+        </Field>
 
-        <input name="quantite_kg" type="number" step="0.1" placeholder="Quantité (kg)" required className="border rounded-md px-3 py-2" />
-        <input name="cout" type="number" step="1" placeholder="Coût (FCFA, optionnel)" className="border rounded-md px-3 py-2" />
+        <Input name="quantite_kg" type="number" step="0.1" placeholder="Quantité (kg)" required />
+        <Input name="cout" type="number" step="1" placeholder="Coût (FCFA, optionnel)" />
 
-        <label className="text-sm text-gray-600">
-          Date
-          <input
+        <Field label="Date">
+          <Input
             name="date_distribution"
             type="date"
             required
             defaultValue={new Date().toISOString().split('T')[0]}
-            className="border rounded-md px-3 py-2 w-full mt-1"
           />
-        </label>
+        </Field>
 
-        <button type="submit" className="bg-[#1F2B22] text-white rounded-md py-2 mt-2">
+        <Button type="submit" variante="primaire" className="mt-1">
           Enregistrer
-        </button>
+        </Button>
       </form>
     </div>
   )

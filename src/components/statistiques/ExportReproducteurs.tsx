@@ -55,10 +55,10 @@ export function ExportReproducteurs({ stats, nomElevage }: { stats: StatsLapin[]
 
   return (
     <div className="flex gap-2">
-      <button onClick={exporterPDF} className="flex-1 text-sm border border-[#1F2B22] text-[#1F2B22] rounded-md py-2">
+      <button onClick={exporterPDF} className="tap flex-1 text-sm border border-ink text-ink rounded-card py-2.5">
         Export PDF
       </button>
-      <button onClick={exporterExcel} className="flex-1 text-sm border border-[#1F2B22] text-[#1F2B22] rounded-md py-2">
+      <button onClick={exporterExcel} className="tap flex-1 text-sm border border-ink text-ink rounded-card py-2.5">
         Export Excel
       </button>
     </div>

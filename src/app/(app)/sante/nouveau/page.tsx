@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { creerSoin } from '../actions'
+import { Input, Textarea, Select, Field } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 
 export default async function NouveauSoinPage({
   searchParams,
@@ -16,52 +18,48 @@ export default async function NouveauSoinPage({
     .order('identifiant')
 
   return (
-    <div className="px-6 py-6 max-w-md">
-      <h1 className="text-xl font-medium mb-4">Nouveau soin</h1>
+    <div className="px-5 py-6 max-w-md mx-auto">
+      <h1 className="text-xl font-display font-semibold mb-5">Nouveau soin</h1>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2 mb-3">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
       )}
 
       <form action={creerSoin} className="flex flex-col gap-3">
-        <label className="text-sm text-gray-600">
-          Lapin
-          <select name="lapin_id" required className="border rounded-md px-3 py-2 w-full mt-1">
+        <Field label="Lapin">
+          <Select name="lapin_id" required>
             {lapins?.map((l) => (
               <option key={l.id} value={l.id}>{l.identifiant} — {l.nom || 'sans nom'}</option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Field>
 
-        <label className="text-sm text-gray-600">
-          Type
-          <select name="type" required className="border rounded-md px-3 py-2 w-full mt-1">
+        <Field label="Type">
+          <Select name="type" required>
             <option value="maladie">Maladie</option>
             <option value="traitement">Traitement</option>
             <option value="vaccin">Vaccin</option>
             <option value="controle_veto">Contrôle vétérinaire</option>
-          </select>
-        </label>
+          </Select>
+        </Field>
 
-        <input name="libelle" type="text" placeholder="Ex: Coccidiose, Vaccin myxomatose..." required className="border rounded-md px-3 py-2" />
+        <Input name="libelle" type="text" placeholder="Ex: Coccidiose, Vaccin myxomatose..." required />
 
-        <label className="text-sm text-gray-600">
-          Date
-          <input
+        <Field label="Date">
+          <Input
             name="date_soin"
             type="date"
             required
             defaultValue={new Date().toISOString().split('T')[0]}
-            className="border rounded-md px-3 py-2 w-full mt-1"
           />
-        </label>
+        </Field>
 
-        <input name="cout" type="number" step="1" placeholder="Coût (FCFA, optionnel)" className="border rounded-md px-3 py-2" />
-        <textarea name="notes" placeholder="Notes" className="border rounded-md px-3 py-2" rows={2} />
+        <Input name="cout" type="number" step="1" placeholder="Coût (FCFA, optionnel)" />
+        <Textarea name="notes" placeholder="Notes" rows={2} />
 
-        <button type="submit" className="bg-[#1F2B22] text-white rounded-md py-2 mt-2">
+        <Button type="submit" variante="primaire" className="mt-1">
           Enregistrer
-        </button>
+        </Button>
       </form>
     </div>
   )
