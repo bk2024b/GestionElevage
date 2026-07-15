@@ -4,6 +4,8 @@ import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
 import { formatFCFA } from '@/lib/finances'
 import { classifierLapin } from '@/lib/lapins'
+import { StatCard, Card } from '@/components/ui/Card'
+import { ButtonLink, Button } from '@/components/ui/Button'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -66,127 +68,74 @@ export default async function DashboardPage() {
   )
 
   return (
-    <div className="px-6 py-8">
-      <h1 className="text-xl font-medium mb-1">Bienvenue</h1>
-      <p className="text-sm text-gray-500 mb-6">{user?.email}</p>
+    <div className="px-5 py-6 max-w-md mx-auto">
+      <h1 className="text-xl font-display font-semibold mb-1">Bienvenue</h1>
+      <p className="text-sm text-ink-soft mb-6">{user?.email}</p>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
-        <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Total lapins</p>
-          <p className="text-2xl font-medium">{nbLapinsTotal ?? 0}</p>
-        </div>
-        <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Jeunes lapins</p>
-          <p className="text-2xl font-medium">{nbJeunes}</p>
-        </div>
+        <StatCard label="Total lapins" value={nbLapinsTotal ?? 0} />
+        <StatCard label="Jeunes lapins" value={nbJeunes} />
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Femelles reproductrices</p>
-          <p className="text-2xl font-medium">{nbFemellesReproductrices}</p>
-        </div>
-        <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Mâles reproducteurs</p>
-          <p className="text-2xl font-medium">{nbMalesReproducteurs}</p>
-        </div>
+        <StatCard label="Femelles reproductrices" value={nbFemellesReproductrices} />
+        <StatCard label="Mâles reproducteurs" value={nbMalesReproducteurs} />
       </div>
 
       {(nbGestantes ?? 0) > 0 && (
-        <div className="bg-white border rounded-md px-3 py-3 mb-6">
-          <p className="text-xs text-gray-500">Gestantes en cours</p>
-          <p className="text-2xl font-medium">{nbGestantes}</p>
+        <div className="mb-6">
+          <StatCard label="Gestantes en cours" value={nbGestantes ?? 0} />
         </div>
       )}
 
       {rappelsUrgents && rappelsUrgents.length > 0 && (
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
-            <p className="text-sm text-gray-600">À faire</p>
-            {nbRappels ? <span className="text-xs text-gray-400">{nbRappels} au total</span> : null}
+            <p className="text-sm text-ink-soft">À faire</p>
+            {nbRappels ? <span className="text-xs text-ink-soft/70">{nbRappels} au total</span> : null}
           </div>
           <div className="flex flex-col gap-2">
             {rappelsUrgents.map((r: any) => (
-              <div key={r.id} className="flex items-center gap-2 bg-white border rounded-md px-3 py-2">
+              <Card key={r.id} className="flex items-center gap-2 py-2">
                 {r.lapin && <EarTagBadge identifiant={r.lapin.identifiant} sexe={r.lapin.sexe} />}
                 <span className="text-sm flex-1">{LABEL_TYPE_RAPPEL[r.type] || r.message}</span>
-                <span className="text-xs text-gray-500">{new Date(r.date_prevue).toLocaleDateString('fr-FR')}</span>
-              </div>
+                <span className="text-xs text-ink-soft">{new Date(r.date_prevue).toLocaleDateString('fr-FR')}</span>
+              </Card>
             ))}
           </div>
-          <Link href="/rappels" className="text-xs text-gray-500 mt-2 inline-block">
+          <Link href="/rappels" className="text-xs text-ink-soft mt-2 inline-block">
             Voir tous les rappels →
           </Link>
         </div>
       )}
 
-      <p className="text-xs text-gray-400 mb-2">Élevage</p>
+      <p className="text-xs text-ink-soft/70 mb-2">Élevage</p>
       <div className="flex flex-col gap-2 mb-6">
-        <Link
-          href="/lapins"
-          className="block text-center bg-[#1F2B22] text-white rounded-md py-2"
-        >
-          Voir mes lapins
-        </Link>
-        <Link
-          href="/reproduction"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Voir la reproduction
-        </Link>
-        <Link
-          href="/mises-bas"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Naissances et sevrages
-        </Link>
-        <Link
-          href="/sante"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Santé et soins
-        </Link>
-        <Link
-          href="/alimentation"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Alimentation
-        </Link>
-        <Link
-          href="/calendrier"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Calendrier
-        </Link>
+        <ButtonLink href="/lapins" variante="primaire">Voir mes lapins</ButtonLink>
+        <ButtonLink href="/reproduction" variante="secondaire">Voir la reproduction</ButtonLink>
+        <ButtonLink href="/mises-bas" variante="secondaire">Naissances et sevrages</ButtonLink>
+        <ButtonLink href="/sante" variante="secondaire">Santé et soins</ButtonLink>
+        <ButtonLink href="/alimentation" variante="secondaire">Alimentation</ButtonLink>
+        <ButtonLink href="/calendrier" variante="secondaire">Calendrier</ButtonLink>
       </div>
 
-      <p className="text-xs text-gray-400 mb-2">Gestion</p>
+      <p className="text-xs text-ink-soft/70 mb-2">Gestion</p>
       <div className="flex flex-col gap-2 mb-6">
         <Link
           href="/finances"
-          className="flex items-center justify-between border border-[#1F2B22] text-[#1F2B22] rounded-md py-2 px-4"
+          className="tap flex items-center justify-between border border-ink text-ink rounded-card py-2.5 px-4 text-sm"
         >
           <span>Finances</span>
-          <span className={`text-sm font-medium ${beneficeDuMois >= 0 ? '' : 'text-red-700'}`}>
+          <span className={`font-medium ${beneficeDuMois >= 0 ? '' : 'text-danger'}`}>
             {formatFCFA(beneficeDuMois)} ce mois
           </span>
         </Link>
-        <Link
-          href="/statistiques"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Statistiques et export
-        </Link>
-        <Link
-          href="/parametres"
-          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
-        >
-          Paramètres
-        </Link>
+        <ButtonLink href="/statistiques" variante="secondaire">Statistiques et export</ButtonLink>
+        <ButtonLink href="/parametres" variante="secondaire">Paramètres</ButtonLink>
       </div>
 
       <form action={signOut}>
-        <button type="submit" className="text-sm text-red-600">Se déconnecter</button>
+        <Button variante="danger" className="w-full">Se déconnecter</Button>
       </form>
     </div>
   )
