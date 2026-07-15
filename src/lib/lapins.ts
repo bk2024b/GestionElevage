@@ -24,3 +24,16 @@ export async function genererIdentifiant(userId: string, sexe: SexeLapin) {
 
   return `${prefixe}${String(prochainNumero).padStart(3, '0')}`
 }
+
+export function classifierLapin(lapin: { date_naissance: string | null; age_premiere_saillie: number | null }) {
+  if (!lapin.date_naissance) return 'reproducteur' // âge inconnu = considéré adulte par défaut
+
+  const seuilMois = lapin.age_premiere_saillie ?? 6
+  const naissance = new Date(lapin.date_naissance)
+  const maintenant = new Date()
+  const ageMois =
+    (maintenant.getFullYear() - naissance.getFullYear()) * 12 +
+    (maintenant.getMonth() - naissance.getMonth())
+
+  return ageMois >= seuilMois ? 'reproducteur' : 'jeune'
+}

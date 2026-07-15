@@ -3,20 +3,36 @@ import { signOut } from '../../(auth)/actions'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
 import { formatFCFA } from '@/lib/finances'
+import { classifierLapin } from '@/lib/lapins'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { count: nbLapins } = await supabase
+  const { data: lapinsActifs } = await supabase
+    .from('lapins')
+    .select('sexe, date_naissance, age_premiere_saillie')
+    .eq('statut', 'actif')
+
+  const { count: nbLapinsTotal } = await supabase
     .from('lapins')
     .select('*', { count: 'exact', head: true })
 
-  const { count: nbActifs } = await supabase
-    .from('lapins')
-    .select('*', { count: 'exact', head: true })
-    .eq('statut', 'actif')
+  let nbFemellesReproductrices = 0
+  let nbMalesReproducteurs = 0
+  let nbJeunes = 0
+
+  for (const l of lapinsActifs ?? []) {
+    const categorie = classifierLapin(l)
+    if (categorie === 'jeune') {
+      nbJeunes++
+    } else if (l.sexe === 'F') {
+      nbFemellesReproductrices++
+    } else {
+      nbMalesReproducteurs++
+    }
+  }
 
   const { count: nbGestantes } = await supabase
     .from('accouplements')
@@ -54,20 +70,34 @@ export default async function DashboardPage() {
       <h1 className="text-xl font-medium mb-1">Bienvenue</h1>
       <p className="text-sm text-gray-500 mb-6">{user?.email}</p>
 
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Lapins</p>
-          <p className="text-2xl font-medium">{nbLapins ?? 0}</p>
+          <p className="text-xs text-gray-500">Total lapins</p>
+          <p className="text-2xl font-medium">{nbLapinsTotal ?? 0}</p>
         </div>
         <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Actifs</p>
-          <p className="text-2xl font-medium">{nbActifs ?? 0}</p>
-        </div>
-        <div className="bg-white border rounded-md px-3 py-3">
-          <p className="text-xs text-gray-500">Gestantes</p>
-          <p className="text-2xl font-medium">{nbGestantes ?? 0}</p>
+          <p className="text-xs text-gray-500">Jeunes lapins</p>
+          <p className="text-2xl font-medium">{nbJeunes}</p>
         </div>
       </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <div className="bg-white border rounded-md px-3 py-3">
+          <p className="text-xs text-gray-500">Femelles reproductrices</p>
+          <p className="text-2xl font-medium">{nbFemellesReproductrices}</p>
+        </div>
+        <div className="bg-white border rounded-md px-3 py-3">
+          <p className="text-xs text-gray-500">Mâles reproducteurs</p>
+          <p className="text-2xl font-medium">{nbMalesReproducteurs}</p>
+        </div>
+      </div>
+
+      {(nbGestantes ?? 0) > 0 && (
+        <div className="bg-white border rounded-md px-3 py-3 mb-6">
+          <p className="text-xs text-gray-500">Gestantes en cours</p>
+          <p className="text-2xl font-medium">{nbGestantes}</p>
+        </div>
+      )}
 
       {rappelsUrgents && rappelsUrgents.length > 0 && (
         <div className="mb-6">
@@ -103,6 +133,12 @@ export default async function DashboardPage() {
           className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
         >
           Voir la reproduction
+        </Link>
+        <Link
+          href="/mises-bas"
+          className="block text-center border border-[#1F2B22] text-[#1F2B22] rounded-md py-2"
+        >
+          Naissances et sevrages
         </Link>
         <Link
           href="/sante"
