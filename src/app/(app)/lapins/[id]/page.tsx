@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { modifierLapin, supprimerLapin } from '../actions'
+import { recupererHistoriqueLapin, COULEUR_EVENEMENT_HISTORIQUE } from '@/lib/historique'
 import { notFound } from 'next/navigation'
 
 export default async function FicheLapinPage({
@@ -17,6 +18,14 @@ export default async function FicheLapinPage({
   const { data: lapin } = await supabase.from('lapins').select('*').eq('id', id).single()
   if (!lapin) notFound()
 
+  const historique = await recupererHistoriqueLapin(
+    lapin.id,
+    lapin.sexe,
+    lapin.date_naissance,
+    lapin.date_statut,
+    lapin.statut
+  )
+
   const modifierAvecId = modifierLapin.bind(null, id)
   const supprimerAvecId = supprimerLapin.bind(null, id)
 
@@ -31,7 +40,7 @@ export default async function FicheLapinPage({
         <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2 mb-3">{error}</p>
       )}
 
-      <form action={modifierAvecId} className="flex flex-col gap-3">
+      <form action={modifierAvecId} className="flex flex-col gap-3 mb-8">
         <input name="nom" type="text" defaultValue={lapin.nom ?? ''} placeholder="Nom" className="border rounded-md px-3 py-2" />
         <input name="race" type="text" defaultValue={lapin.race ?? ''} placeholder="Race" className="border rounded-md px-3 py-2" />
         <input name="date_naissance" type="date" defaultValue={lapin.date_naissance ?? ''} className="border rounded-md px-3 py-2" />
@@ -60,7 +69,25 @@ export default async function FicheLapinPage({
         </button>
       </form>
 
-      <form action={supprimerAvecId} className="mt-3">
+      <h2 className="text-sm font-medium text-gray-600 mb-3">Historique</h2>
+      <div className="flex flex-col gap-2 mb-8">
+        {historique.map((e, idx) => (
+          <div key={idx} className="flex items-start gap-2 bg-white border rounded-md px-3 py-2">
+            <span className={`w-2 h-2 rounded-full mt-1.5 ${COULEUR_EVENEMENT_HISTORIQUE[e.type]}`} />
+            <div className="flex-1">
+              <p className="text-sm">{e.label}</p>
+              {e.detail && <p className="text-xs text-gray-500">{e.detail}</p>}
+            </div>
+            <span className="text-xs text-gray-400">{new Date(e.date).toLocaleDateString('fr-FR')}</span>
+          </div>
+        ))}
+
+        {historique.length === 0 && (
+          <p className="text-xs text-gray-400 text-center py-4">Aucun événement enregistré.</p>
+        )}
+      </div>
+
+      <form action={supprimerAvecId}>
         <button type="submit" className="text-sm text-red-600 w-full text-center py-2">
           Supprimer ce lapin
         </button>
