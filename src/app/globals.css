@@ -1,23 +1,51 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-ink: #1F2B22;
+  --color-ink-soft: #4B5A4E;
+  --color-paper: #F5F3EA;
+  --color-surface: #FFFFFF;
+  --color-line: #E4E0D3;
+
+  --color-accent: #C97B3D;
+  --color-accent-soft: #F3DCC4;
+
+  --color-success: #5B8C5A;
+  --color-danger: #B5482E;
+
+  /* Fonts */
+  --font-display: var(--font-sora), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
+
+  /* Radius */
+  --radius-card: 18px;
+  --radius-pill: 999px;
+}
 
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
   }
+
   body {
     @apply bg-paper text-ink font-sans;
     overscroll-behavior-y: none;
   }
-  h1, h2, h3 {
+
+  h1,
+  h2,
+  h3 {
     @apply font-display;
   }
+
   ::selection {
     @apply bg-accent-soft text-ink;
   }
+
   *:focus-visible {
-    outline: 2px solid theme('colors.accent.DEFAULT');
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 }
@@ -26,12 +54,15 @@
   .safe-top {
     padding-top: env(safe-area-inset-top);
   }
+
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
   .tap {
     @apply transition-transform duration-100 active:scale-[0.97];
   }
+
   @media (prefers-reduced-motion: reduce) {
     .tap {
       transition: none;
