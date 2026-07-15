@@ -7,6 +7,9 @@ interface StatsData {
   totalNes: number
   totalMorts: number
   tauxMortalite: number
+  totalDisponibles: number
+  totalSevres: number
+  tauxMortaliteSevrage: number
   revenus: number
   depenses: number
   benefice: number
@@ -14,32 +17,34 @@ interface StatsData {
 
 export function ExportButtons({ stats, nomElevage }: { stats: StatsData; nomElevage: string }) {
   async function exporterPDF() {
-  const { default: jsPDF } = await import('jspdf')
-  const { default: autoTable } = await import('jspdf-autotable')
-  const doc = new jsPDF()
+    const { default: jsPDF } = await import('jspdf')
+    const { default: autoTable } = await import('jspdf-autotable')
+    const doc = new jsPDF()
 
-  doc.setFontSize(16)
-  doc.text(nomElevage, 14, 18)
-  doc.setFontSize(11)
-  doc.text(`Rapport statistique — ${new Date().toLocaleDateString('fr-FR')}`, 14, 26)
+    doc.setFontSize(16)
+    doc.text(nomElevage, 14, 18)
+    doc.setFontSize(11)
+    doc.text(`Rapport statistique — ${new Date().toLocaleDateString('fr-FR')}`, 14, 26)
 
-  autoTable(doc, {
-    startY: 34,
-    head: [['Indicateur', 'Valeur']],
-    body: [
-      ['Total lapins', String(stats.totalLapins)],
-      ['Accouplements', String(stats.totalAccouplements)],
-      ['Taux de reproduction', `${stats.tauxReproduction} %`],
-      ['Lapereaux nés', String(stats.totalNes)],
-      ['Taux de mortalité', `${stats.tauxMortalite} %`],
-      ['Revenus', `${stats.revenus.toLocaleString('fr-FR')} F`],
-      ['Dépenses', `${stats.depenses.toLocaleString('fr-FR')} F`],
-      ['Bénéfice', `${stats.benefice.toLocaleString('fr-FR')} F`],
-    ],
-  })
+    autoTable(doc, {
+      startY: 34,
+      head: [['Indicateur', 'Valeur']],
+      body: [
+        ['Total lapins', String(stats.totalLapins)],
+        ['Accouplements', String(stats.totalAccouplements)],
+        ['Taux de reproduction', `${stats.tauxReproduction} %`],
+        ['Lapereaux nés', String(stats.totalNes)],
+        ['Taux de mortalité (naissance)', `${stats.tauxMortalite} %`],
+        ['Lapereaux sevrés', `${stats.totalSevres} / ${stats.totalDisponibles}`],
+        ['Taux de mortalité (sevrage)', `${stats.tauxMortaliteSevrage} %`],
+        ['Revenus', `${stats.revenus.toLocaleString('fr-FR')} F`],
+        ['Dépenses', `${stats.depenses.toLocaleString('fr-FR')} F`],
+        ['Bénéfice', `${stats.benefice.toLocaleString('fr-FR')} F`],
+      ],
+    })
 
-  doc.save(`statistiques-${new Date().toISOString().split('T')[0]}.pdf`)
-}
+    doc.save(`statistiques-${new Date().toISOString().split('T')[0]}.pdf`)
+  }
 
   async function exporterExcel() {
     const XLSX = await import('xlsx')
@@ -49,7 +54,10 @@ export function ExportButtons({ stats, nomElevage }: { stats: StatsData; nomElev
       { Indicateur: 'Accouplements', Valeur: stats.totalAccouplements },
       { Indicateur: 'Taux de reproduction (%)', Valeur: stats.tauxReproduction },
       { Indicateur: 'Lapereaux nés', Valeur: stats.totalNes },
-      { Indicateur: 'Taux de mortalité (%)', Valeur: stats.tauxMortalite },
+      { Indicateur: 'Taux de mortalité naissance (%)', Valeur: stats.tauxMortalite },
+      { Indicateur: 'Lapereaux sevrés', Valeur: stats.totalSevres },
+      { Indicateur: 'Lapereaux disponibles', Valeur: stats.totalDisponibles },
+      { Indicateur: 'Taux de mortalité sevrage (%)', Valeur: stats.tauxMortaliteSevrage },
       { Indicateur: 'Revenus (FCFA)', Valeur: stats.revenus },
       { Indicateur: 'Dépenses (FCFA)', Valeur: stats.depenses },
       { Indicateur: 'Bénéfice (FCFA)', Valeur: stats.benefice },

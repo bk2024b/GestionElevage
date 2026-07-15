@@ -73,6 +73,8 @@ export interface TransactionFinanciere {
   id: string
   user_id: string
   lapin_id: string | null
+  soin_id: string | null
+  alimentation_id: string | null
   type: TypeTransaction
   categorie: CategorieFinance
   montant: number

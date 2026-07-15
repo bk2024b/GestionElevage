@@ -44,19 +44,28 @@ export default async function FinancesPage() {
         {transactions?.map((t) => {
           const supprimerAvecId = supprimerTransaction.bind(null, t.id)
           const label = t.type === 'revenu' ? CATEGORIES_REVENU[t.categorie] : CATEGORIES_DEPENSE[t.categorie]
+          const estAutomatique = t.soin_id || t.alimentation_id
 
           return (
             <div key={t.id} className="flex items-center gap-3 bg-white border rounded-md px-3 py-2">
               <div className="flex-1">
-                <p className="text-sm">{label || t.categorie}</p>
-                <p className="text-xs text-gray-500">{new Date(t.date_transaction).toLocaleDateString('fr-FR')}{t.description ? ` — ${t.description}` : ''}</p>
+                <p className="text-sm">
+                  {label || t.categorie}
+                  {estAutomatique && <span className="text-xs text-gray-400 ml-1">(auto)</span>}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {new Date(t.date_transaction).toLocaleDateString('fr-FR')}
+                  {t.description ? ` — ${t.description}` : ''}
+                </p>
               </div>
               <span className={`text-sm font-medium ${t.type === 'revenu' ? 'text-green-700' : 'text-red-700'}`}>
                 {t.type === 'revenu' ? '+' : '-'}{formatFCFA(Number(t.montant))}
               </span>
-              <form action={supprimerAvecId}>
-                <button type="submit" className="text-xs text-gray-400">✕</button>
-              </form>
+              {!estAutomatique && (
+                <form action={supprimerAvecId}>
+                  <button type="submit" className="text-xs text-gray-400">✕</button>
+                </form>
+              )}
             </div>
           )
         })}
