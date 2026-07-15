@@ -2,6 +2,9 @@ import { createClient } from '@/lib/supabase/server'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { modifierLapin, supprimerLapin } from '../actions'
 import { recupererHistoriqueLapin, COULEUR_EVENEMENT_HISTORIQUE } from '@/lib/historique'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Input, Textarea, Select, Field } from '@/components/ui/Input'
 import { notFound } from 'next/navigation'
 
 export default async function FicheLapinPage({
@@ -30,67 +33,65 @@ export default async function FicheLapinPage({
   const supprimerAvecId = supprimerLapin.bind(null, id)
 
   return (
-    <div className="px-6 py-6 max-w-md">
-      <div className="flex items-center gap-3 mb-4">
+    <div className="px-5 py-6 max-w-md mx-auto">
+      <div className="flex items-center gap-3 mb-5">
         <EarTagBadge identifiant={lapin.identifiant} sexe={lapin.sexe} />
-        <h1 className="text-xl font-medium">{lapin.nom || 'Sans nom'}</h1>
+        <h1 className="text-xl font-display font-semibold">{lapin.nom || 'Sans nom'}</h1>
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2 mb-3">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
       )}
 
       <form action={modifierAvecId} className="flex flex-col gap-3 mb-8">
-        <input name="nom" type="text" defaultValue={lapin.nom ?? ''} placeholder="Nom" className="border rounded-md px-3 py-2" />
-        <input name="race" type="text" defaultValue={lapin.race ?? ''} placeholder="Race" className="border rounded-md px-3 py-2" />
-        <input name="date_naissance" type="date" defaultValue={lapin.date_naissance ?? ''} className="border rounded-md px-3 py-2" />
-        <input name="poids_actuel" type="number" step="0.1" defaultValue={lapin.poids_actuel ?? ''} placeholder="Poids (kg)" className="border rounded-md px-3 py-2" />
-        <input name="couleur" type="text" defaultValue={lapin.couleur ?? ''} placeholder="Couleur" className="border rounded-md px-3 py-2" />
-        <input name="numero_cage" type="text" defaultValue={lapin.numero_cage ?? ''} placeholder="Numéro de cage" className="border rounded-md px-3 py-2" />
+        <Input name="nom" type="text" defaultValue={lapin.nom ?? ''} placeholder="Nom" />
+        <Input name="race" type="text" defaultValue={lapin.race ?? ''} placeholder="Race" />
+        <Input name="date_naissance" type="date" defaultValue={lapin.date_naissance ?? ''} />
+        <Input name="poids_actuel" type="number" step="0.1" defaultValue={lapin.poids_actuel ?? ''} placeholder="Poids (kg)" />
+        <Input name="couleur" type="text" defaultValue={lapin.couleur ?? ''} placeholder="Couleur" />
+        <Input name="numero_cage" type="text" defaultValue={lapin.numero_cage ?? ''} placeholder="Numéro de cage" />
 
-        <label className="text-sm text-gray-600">
-          Âge 1ère saillie prévu (mois)
-          <input name="age_premiere_saillie" type="number" defaultValue={lapin.age_premiere_saillie ?? ''} className="border rounded-md px-3 py-2 w-full mt-1" />
-        </label>
+        <Field label="Âge 1ère saillie prévu (mois)">
+          <Input name="age_premiere_saillie" type="number" defaultValue={lapin.age_premiere_saillie ?? ''} />
+        </Field>
 
-        <label className="text-sm text-gray-600">
-          Statut
-          <select name="statut" defaultValue={lapin.statut} className="border rounded-md px-3 py-2 w-full mt-1">
+        <Field label="Statut">
+          <Select name="statut" defaultValue={lapin.statut}>
             <option value="actif">Actif</option>
             <option value="vendu">Vendu</option>
             <option value="decede">Décédé</option>
-          </select>
-        </label>
+          </Select>
+        </Field>
 
-        <textarea name="notes" defaultValue={lapin.notes ?? ''} placeholder="Notes" className="border rounded-md px-3 py-2" rows={3} />
+        <Textarea name="notes" defaultValue={lapin.notes ?? ''} placeholder="Notes" rows={3} />
 
-        <button type="submit" className="bg-[#1F2B22] text-white rounded-md py-2 mt-2">
+        <Button type="submit" variante="primaire" className="mt-1">
           Enregistrer les modifications
-        </button>
+        </Button>
       </form>
 
-      <h2 className="text-sm font-medium text-gray-600 mb-3">Historique</h2>
+      <h2 className="text-sm font-medium text-ink-soft mb-3">Historique</h2>
       <div className="flex flex-col gap-2 mb-8">
         {historique.map((e, idx) => (
-          <div key={idx} className="flex items-start gap-2 bg-white border rounded-md px-3 py-2">
-            <span className={`w-2 h-2 rounded-full mt-1.5 ${COULEUR_EVENEMENT_HISTORIQUE[e.type]}`} />
+          <Card key={idx} className="flex items-start gap-2 py-2">
+            <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${COULEUR_EVENEMENT_HISTORIQUE[e.type]}`} />
             <div className="flex-1">
               <p className="text-sm">{e.label}</p>
-              {e.detail && <p className="text-xs text-gray-500">{e.detail}</p>}
+              {e.detail && <p className="text-xs text-ink-soft">{e.detail}</p>}
             </div>
-            <span className="text-xs text-gray-400">{new Date(e.date).toLocaleDateString('fr-FR')}</span>
-          </div>
+            <span className="text-xs text-ink-soft/70 shrink-0">{new Date(e.date).toLocaleDateString('fr-FR')}</span>
+          </Card>
         ))}
 
         {historique.length === 0 && (
-          <p className="text-xs text-gray-400 text-center py-4">Aucun événement enregistré.</p>
+          <p className="text-xs text-ink-soft/70 text-center py-4">Aucun événement enregistré.</p>
         )}
       </div>
 
       <form action={supprimerAvecId}>
-        <button type="submit" className="text-sm text-red-600 w-full text-center py-2">
+        <Button type="submit" variante="danger" className="w-full">
           Supprimer ce lapin
-        </button>
+        </Button>
       </form>
     </div>
   )

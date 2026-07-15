@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { modifierStatutAccouplement, confirmerPalpation } from './actions'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { Select } from '@/components/ui/Input'
+import { Button, ButtonLink } from '@/components/ui/Button'
+import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
 const LABEL_STATUT: Record<string, string> = {
@@ -8,6 +13,13 @@ const LABEL_STATUT: Record<string, string> = {
   confirmee: 'Gestation confirmée',
   echouee: 'Échouée',
   terminee: 'Terminée',
+}
+
+const TON_STATUT: Record<string, 'success' | 'neutre' | 'danger' | 'accent'> = {
+  en_cours: 'neutre',
+  confirmee: 'success',
+  echouee: 'danger',
+  terminee: 'accent',
 }
 
 function palpationDue(dateAccouplement: string) {
@@ -29,11 +41,12 @@ export default async function ReproductionPage() {
     .order('date_accouplement', { ascending: false })
 
   return (
-    <div className="px-6 py-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-medium">Reproduction</h1>
-        <Link href="/reproduction/nouveau" className="text-sm bg-[#1F2B22] text-white px-3 py-2 rounded-md">
-          + Accouplement
+    <div className="px-5 py-6 max-w-md mx-auto">
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-xl font-display font-semibold">Reproduction</h1>
+        <Link href="/reproduction/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-3 py-2 rounded-card">
+          <Plus size={16} />
+          Accouplement
         </Link>
       </div>
 
@@ -43,80 +56,80 @@ export default async function ReproductionPage() {
           const palpationRequise = a.statut === 'en_cours' && palpationDue(a.date_accouplement)
 
           return (
-            <div key={a.id} className="bg-white border rounded-md px-4 py-3">
-              <div className="flex items-center gap-2 mb-2">
-                <EarTagBadge identifiant={a.femelle.identifiant} sexe="F" />
-                <span className="text-sm text-gray-400">×</span>
-                <EarTagBadge identifiant={a.male.identifiant} sexe="M" />
+            <Card key={a.id}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <EarTagBadge identifiant={a.femelle.identifiant} sexe="F" />
+                  <span className="text-sm text-ink-soft/60">×</span>
+                  <EarTagBadge identifiant={a.male.identifiant} sexe="M" />
+                </div>
+                <Badge ton={TON_STATUT[a.statut]}>{LABEL_STATUT[a.statut]}</Badge>
               </div>
 
               <div className="text-sm flex flex-col gap-1 mb-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Accouplement</span>
+                  <span className="text-ink-soft">Accouplement</span>
                   <span>{new Date(a.date_accouplement).toLocaleDateString('fr-FR')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Nid prévu</span>
+                  <span className="text-ink-soft">Nid prévu</span>
                   <span>{new Date(a.date_nid_prevue).toLocaleDateString('fr-FR')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Mise bas prévue</span>
+                  <span className="text-ink-soft">Mise bas prévue</span>
                   <span className="font-medium">{new Date(a.date_misebas_prevue).toLocaleDateString('fr-FR')}</span>
                 </div>
               </div>
 
               {a.statut === 'confirmee' && (
-                <div className="text-xs bg-green-50 text-green-800 rounded-md px-2 py-1.5 mb-2">
+                <p className="text-xs bg-success/10 text-success rounded-card px-2 py-1.5 mb-2">
                   Gestation confirmée — mise bas prévue le {new Date(a.date_misebas_prevue).toLocaleDateString('fr-FR')}
-                </div>
+                </p>
               )}
 
               {a.statut === 'echouee' && (
-                <div className="text-xs bg-red-50 text-red-800 rounded-md px-2 py-1.5 mb-2">
+                <p className="text-xs bg-danger/10 text-danger rounded-card px-2 py-1.5 mb-2">
                   Accouplement échoué — un nouvel essai peut être planifié
-                </div>
+                </p>
               )}
 
               {palpationRequise ? (
-                <div className="border-t pt-2 mt-1">
-                  <p className="text-xs text-gray-600 mb-2">Palpation à effectuer — la femelle est-elle gestante ?</p>
+                <div className="border-t border-line pt-2 mt-1">
+                  <p className="text-xs text-ink-soft mb-2">Palpation à effectuer — la femelle est-elle gestante ?</p>
                   <div className="flex gap-2">
                     <form action={confirmerPalpation.bind(null, a.id, 'oui')} className="flex-1">
-                      <button type="submit" className="w-full text-xs bg-green-600 text-white px-2 py-1.5 rounded-md">
+                      <Button type="submit" className="w-full bg-success text-paper text-xs py-1.5">
                         Oui, gestante
-                      </button>
+                      </Button>
                     </form>
                     <form action={confirmerPalpation.bind(null, a.id, 'non')} className="flex-1">
-                      <button type="submit" className="w-full text-xs bg-red-600 text-white px-2 py-1.5 rounded-md">
+                      <Button type="submit" className="w-full bg-danger text-paper text-xs py-1.5">
                         Non, échouée
-                      </button>
+                      </Button>
                     </form>
                   </div>
                 </div>
               ) : (
                 <form action={modifierAvecId} className="flex items-center gap-2">
-                  <select
-                    name="statut"
-                    defaultValue={a.statut}
-                    className="border rounded-md px-2 py-1 text-xs flex-1"
-                  >
+                  <Select name="statut" defaultValue={a.statut} className="!py-1.5 text-xs flex-1">
                     {Object.entries(LABEL_STATUT).map(([val, label]) => (
                       <option key={val} value={val}>{label}</option>
                     ))}
-                  </select>
-                  <button type="submit" className="text-xs bg-gray-100 px-2 py-1 rounded-md">
+                  </Select>
+                  <Button type="submit" variante="discret" className="text-xs py-1.5">
                     Mettre à jour
-                  </button>
+                  </Button>
                 </form>
               )}
-            </div>
+            </Card>
           )
         })}
 
         {accouplements?.length === 0 && (
-          <p className="text-sm text-gray-500 text-center py-8">
-            Aucun accouplement enregistré.
-          </p>
+          <div className="text-center py-12">
+            <p className="text-sm text-ink-soft mb-1">Aucun accouplement enregistré.</p>
+            <p className="text-xs text-ink-soft/70">Enregistre ton premier accouplement pour démarrer un suivi.</p>
+          </div>
         )}
       </div>
     </div>
