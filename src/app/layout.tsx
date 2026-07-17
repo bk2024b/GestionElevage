@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Sora, Inter, IBM_Plex_Mono } from 'next/font/google'
+import { PwaRegister } from '@/components/PwaRegister'
 import './globals.css'
 
 const sora = Sora({ subsets: ['latin'], variable: '--font-sora', weight: ['500', '600', '700'] })
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <body className={`${sora.variable} ${inter.variable} ${plexMono.variable}`}>
+        <PwaRegister />
         {children}
       </body>
     </html>
