@@ -1,4 +1,7 @@
 import { signUp } from '../actions'
+import { Input, Field } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
+import Link from 'next/link'
 
 export default async function RegisterPage({
   searchParams,
@@ -8,26 +11,40 @@ export default async function RegisterPage({
   const { error } = await searchParams
 
   return (
-    <main className="flex min-h-screen flex-col justify-center px-6 max-w-sm mx-auto gap-4">
-      <h1 className="text-2xl font-medium">Créer un compte</h1>
+    <div className="min-h-screen flex flex-col justify-center px-6 max-w-sm mx-auto py-10">
+      <div className="flex flex-col items-center mb-8">
+        <span className="w-12 h-12 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-sm mb-3">
+          EL
+        </span>
+        <h1 className="text-xl font-display font-semibold">Créer un compte</h1>
+        <p className="text-sm text-ink-soft mt-1">Gratuit, prêt en une minute</p>
+      </div>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-4">{error}</p>
       )}
 
       <form action={signUp} className="flex flex-col gap-3">
-        <input name="nom" type="text" placeholder="Ton nom" required className="border rounded-md px-3 py-2" />
-        <input name="nom_elevage" type="text" placeholder="Nom de l'élevage" required className="border rounded-md px-3 py-2" />
-        <input name="email" type="email" placeholder="Email" required className="border rounded-md px-3 py-2" />
-        <input name="password" type="password" placeholder="Mot de passe" required minLength={6} className="border rounded-md px-3 py-2" />
-        <button type="submit" className="bg-[#1F2B22] text-white rounded-md py-2 mt-2">
+        <Field label="Ton nom">
+          <Input name="nom" type="text" required />
+        </Field>
+        <Field label="Nom de l'élevage">
+          <Input name="nom_elevage" type="text" required />
+        </Field>
+        <Field label="Email">
+          <Input name="email" type="email" required />
+        </Field>
+        <Field label="Mot de passe">
+          <Input name="password" type="password" required minLength={6} />
+        </Field>
+        <Button type="submit" variante="primaire" className="mt-2">
           Créer mon compte
-        </button>
+        </Button>
       </form>
 
-      <a href="/login" className="text-sm text-center text-[#5F5E5A]">
-        Déjà un compte ? Se connecter
-      </a>
-    </main>
+      <Link href="/login" className="text-sm text-center text-ink-soft mt-6">
+        Déjà un compte ? <span className="text-ink font-medium">Se connecter</span>
+      </Link>
+    </div>
   )
 }
