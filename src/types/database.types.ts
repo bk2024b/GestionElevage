@@ -107,3 +107,19 @@ export interface Soin {
   lapin?: Lapin
 }
 
+export type TypeRessource = 'document' | 'cours'
+
+export interface Ressource {
+  id: string
+  titre: string
+  description: string | null
+  type: TypeRessource
+  categorie: string | null
+  gratuit: boolean
+  url_acces: string | null
+  chariow_url: string | null
+  image_url: string | null
+  ordre: number
+  publie: boolean
+  created_at: string
+}

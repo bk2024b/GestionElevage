@@ -6,6 +6,7 @@ import { formatFCFA } from '@/lib/finances'
 import { classifierLapin } from '@/lib/lapins'
 import { Card } from '@/components/ui/Card'
 import { QuickAction } from '@/components/ui/QuickAction'
+import { BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import {
   Rabbit,
@@ -196,6 +197,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-3 gap-1">
         <QuickAction href="/statistiques" icon={BarChart3} label="Statistiques" />
         <QuickAction href="/parametres" icon={Settings} label="Paramètres" />
+        <QuickAction href="/store" icon={BookOpen} label="Ressources" />
       </div>
     </div>
   )
