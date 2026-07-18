@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Sora, Inter, IBM_Plex_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { PwaRegister } from '@/components/PwaRegister'
 import './globals.css'
 
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${sora.variable} ${inter.variable} ${plexMono.variable}`}>
         <PwaRegister />
         {children}
+        <Analytics />
       </body>
     </html>
   )
