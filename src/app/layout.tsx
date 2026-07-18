@@ -40,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${sora.variable} ${inter.variable} ${plexMono.variable}`}>
         <PwaRegister />
         {children}
+        <Analytics />
       </body>
     </html>
   )
