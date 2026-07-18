@@ -6,7 +6,6 @@ import { formatFCFA } from '@/lib/finances'
 import { classifierLapin } from '@/lib/lapins'
 import { Card } from '@/components/ui/Card'
 import { QuickAction } from '@/components/ui/QuickAction'
-import { BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import {
   Rabbit,
@@ -18,13 +17,14 @@ import {
   Wallet,
   BarChart3,
   Settings,
+  BookOpen,
   LogOut,
 } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const { data: profil } = await supabase.from('profils').select('nom, nom_elevage').eq('id', user!.id).single()
+  const { data: profilComplet } = await supabase.from('profils').select('nom, nom_elevage, role').eq('id', user!.id).single()
 
   const { data: lapinsActifs } = await supabase
     .from('lapins')
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
     0
   )
 
-  const initiales = (profil?.nom_elevage ?? 'EL')
+  const initiales = (profilComplet?.nom_elevage ?? 'EL')
     .split(' ')
     .map((m: string) => m[0])
     .join('')
@@ -104,10 +104,10 @@ export default async function DashboardPage() {
           </span>
           <div>
             <h1 className="text-lg font-display font-semibold leading-tight">
-              {profil?.nom_elevage ?? 'Mon élevage'}
+              {profilComplet?.nom_elevage ?? 'Mon élevage'}
             </h1>
             <p className="text-xs text-ink-soft capitalize">
-              Bonjour {profil?.nom ?? ''} · {dateAujourdhui}
+              Bonjour {profilComplet?.nom ?? ''} · {dateAujourdhui}
             </p>
           </div>
         </div>
@@ -194,11 +194,20 @@ export default async function DashboardPage() {
       </div>
 
       <p className="text-xs text-ink-soft mb-1">Gestion</p>
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-3 gap-1 mb-4">
         <QuickAction href="/statistiques" icon={BarChart3} label="Statistiques" />
-        <QuickAction href="/parametres" icon={Settings} label="Paramètres" />
         <QuickAction href="/store" icon={BookOpen} label="Ressources" />
+        <QuickAction href="/parametres" icon={Settings} label="Paramètres" />
       </div>
+
+      {profilComplet?.role === 'admin' && (
+        <Link
+          href="/admin"
+          className="tap block text-center border border-accent text-accent rounded-card py-2.5 text-sm font-medium"
+        >
+          Interface admin
+        </Link>
+      )}
     </div>
   )
 }

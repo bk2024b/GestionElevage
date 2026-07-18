@@ -123,3 +123,16 @@ export interface Ressource {
   publie: boolean
   created_at: string
 }
+
+export type StatutAbonnement = 'essai' | 'actif' | 'expire'
+
+export interface Abonnement {
+  id: string
+  user_id: string
+  statut: StatutAbonnement
+  date_fin: string
+  confirme_par: string | null
+  date_confirmation: string | null
+  notes: string | null
+  created_at: string
+}
