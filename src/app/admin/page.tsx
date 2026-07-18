@@ -4,7 +4,7 @@ import { joursRestants } from '@/lib/abonnement'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Input, Field } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
+import { Button, ButtonLink } from '@/components/ui/Button'
 
 const LABEL_STATUT: Record<string, string> = {
   essai: 'Essai',
@@ -43,7 +43,12 @@ export default async function AdminPage({
 
   return (
     <div className="px-5 py-6 max-w-2xl mx-auto">
-      <h1 className="text-xl font-display font-semibold mb-5">Administration</h1>
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-xl font-display font-semibold">Administration</h1>
+        <ButtonLink href="/admin/ressources" variante="secondaire" className="text-xs py-2">
+          Gérer les ressources
+        </ButtonLink>
+      </div>
 
       {error && (
         <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
@@ -78,26 +83,27 @@ export default async function AdminPage({
                 {abonnement ? `${jours} jour(s) restant(s) — expire le ${new Date(abonnement.date_fin).toLocaleDateString('fr-FR')}` : 'Aucun abonnement'}
               </p>
 
-              <form action={confirmerAvecId} className="flex flex-col gap-2 border-t border-line pt-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <Field label="Durée (jours)">
-                    <Input name="duree_jours" type="number" defaultValue={30} />
-                  </Field>
-                  <Field label="Référence paiement">
-                    <Input name="notes" type="text" placeholder="Ex: MoMo #1234" />
-                  </Field>
-                </div>
-                <div className="flex gap-2">
-                  <Button type="submit" variante="primaire" className="flex-1 text-xs py-2">
+              <div className="flex flex-col gap-2 border-t border-line pt-3">
+                <form action={confirmerAvecId} className="flex flex-col gap-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Field label="Durée (jours)">
+                      <Input name="duree_jours" type="number" defaultValue={30} />
+                    </Field>
+                    <Field label="Référence paiement">
+                      <Input name="notes" type="text" placeholder="Ex: MoMo #1234" />
+                    </Field>
+                  </div>
+                  <Button type="submit" variante="primaire" className="text-xs py-2">
                     Confirmer le paiement
                   </Button>
-                  <form action={suspendreAvecId}>
-                    <Button type="submit" variante="danger" className="text-xs py-2 px-3">
-                      Suspendre
-                    </Button>
-                  </form>
-                </div>
-              </form>
+                </form>
+
+                <form action={suspendreAvecId}>
+                  <Button type="submit" variante="danger" className="w-full text-xs py-2">
+                    Suspendre ce compte
+                  </Button>
+                </form>
+              </div>
             </Card>
           )
         })}
