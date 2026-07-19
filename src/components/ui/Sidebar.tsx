@@ -16,6 +16,7 @@ import {
   BarChart3,
   BookOpen,
   Settings,
+  ShieldCheck,
 } from 'lucide-react'
 
 const SECTIONS = [
@@ -43,7 +44,7 @@ const SECTIONS = [
   },
 ]
 
-export function Sidebar() {
+export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname()
 
   return (
@@ -77,6 +78,20 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
+
+      {isAdmin && (
+        <div className="px-3 py-4 border-t border-paper/10">
+          <Link
+            href="/admin"
+            className={`flex items-center gap-3 px-3 py-2 rounded-card text-sm ${
+              pathname.startsWith('/admin') ? 'bg-accent-soft text-accent font-medium' : 'text-accent hover:bg-paper/5'
+            }`}
+          >
+            <ShieldCheck size={16} />
+            Interface admin
+          </Link>
+        </div>
+      )}
     </aside>
   )
 }

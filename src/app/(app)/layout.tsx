@@ -9,9 +9,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (!user) redirect('/login')
 
+  const { data: profil } = await supabase.from('profils').select('role').eq('id', user.id).single()
+
   return (
     <div className="min-h-screen flex bg-paper">
-      <Sidebar />
+      <Sidebar isAdmin={profil?.role === 'admin'} />
       <div className="flex-1 flex flex-col min-w-0">
         <main className="flex-1 pb-20 md:pb-6 safe-top">{children}</main>
         <BottomNav />
