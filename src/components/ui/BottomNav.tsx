@@ -16,7 +16,7 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-surface border-t border-line safe-bottom z-20">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-ink safe-bottom z-20">
       <div className="flex max-w-md mx-auto">
         {ONGLETS.map(({ href, label, icon: Icon }) => {
           const actif = pathname.startsWith(href)
@@ -28,16 +28,16 @@ export function BottomNav() {
             >
               <span
                 className={`flex items-center justify-center w-9 h-6 rounded-pill transition-colors ${
-                  actif ? 'bg-accent-soft' : ''
+                  actif ? 'bg-paper/15' : ''
                 }`}
               >
                 <Icon
                   size={18}
                   strokeWidth={actif ? 2.5 : 2}
-                  className={actif ? 'text-accent' : 'text-ink-soft'}
+                  className={actif ? 'text-accent' : 'text-paper/60'}
                 />
               </span>
-              <span className={`text-[10px] ${actif ? 'text-ink font-medium' : 'text-ink-soft'}`}>
+              <span className={`text-[10px] ${actif ? 'text-paper font-medium' : 'text-paper/50'}`}>
                 {label}
               </span>
             </Link>
