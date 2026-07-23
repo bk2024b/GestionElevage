@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { AppLogoMark } from './AppLogoMark'
+import { BrandName } from './BrandName'
 import {
   Home,
   Rabbit,
@@ -51,6 +52,7 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
     <aside className="hidden md:flex md:w-64 md:flex-col md:shrink-0 md:sticky md:top-0 md:h-screen bg-ink text-paper">
       <div className="flex items-center gap-2.5 px-5 py-5">
         <AppLogoMark size="sm" />
+        <BrandName className="font-display font-semibold text-sm" />
         <span className="font-display font-semibold text-sm">Élevage</span>
       </div>
 

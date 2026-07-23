@@ -8,8 +8,9 @@ const sora = Sora({ subsets: ['latin'], variable: '--font-sora', weight: ['500',
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const plexMono = IBM_Plex_Mono({ subsets: ['latin'], variable: '--font-plex-mono', weight: ['500'] })
 
+
 export const metadata: Metadata = {
-  title: 'Élevage Lapins',
+  title: 'Ferme F001',
   description: "Gestion complète d'élevage cunicole",
   manifest: '/manifest.json',
   icons: {
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Élevage',
+    title: 'Ferme F001',
   },
 }
 

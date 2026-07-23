@@ -1,14 +1,14 @@
 import Link from 'next/link'
+import { AppLogoMark } from '@/components/ui/AppLogoMark'
+import { BrandName } from '@/components/ui/BrandName'
 
 export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-30 bg-paper/90 backdrop-blur border-b border-line safe-top">
       <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="w-8 h-8 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-xs">
-            EL
-          </span>
-          <span className="font-display font-semibold text-sm">Élevage</span>
+          <AppLogoMark size="sm" />
+          <BrandName className="font-display font-semibold text-sm" />
         </Link>
 
         <nav className="hidden sm:flex items-center gap-6 text-sm text-ink-soft">

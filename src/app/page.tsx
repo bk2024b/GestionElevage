@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { MarketingHeader } from '@/components/marketing/MarketingHeader'
 import { FeatureCard } from '@/components/marketing/FeatureCard'
+import { AppLogoMark } from '@/components/ui/AppLogoMark'
+import { BrandName } from '@/components/ui/BrandName'
 import {
   Rabbit,
   HeartPulse,
@@ -32,8 +34,8 @@ export default async function LandingPage() {
           Fait pour les éleveurs cunicoles
         </span>
         <h1 className="text-3xl sm:text-4xl font-display font-semibold leading-tight mb-4">
-          Toute la gestion de votre élevage de lapins, dans votre poche
-        </h1>
+  <BrandName /> — l'élevage sans oublis
+</h1>
         <p className="text-ink-soft text-base leading-relaxed mb-8 max-w-xl mx-auto">
           Fiches individuelles, reproduction, naissances, santé, finances et statistiques —
           une seule application pour suivre votre cheptel, sans carnet ni tableur.
@@ -140,16 +142,20 @@ export default async function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-line py-8">
-        <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="w-6 h-6 rounded-md bg-ink text-paper flex items-center justify-center font-display font-semibold text-[10px]">
-              EL
-            </span>
-            <span className="text-xs text-ink-soft">Élevage — gestion d'élevage cunicole</span>
-          </div>
-          <p className="text-xs text-ink-soft/70">© {new Date().getFullYear()} Élevage. Tous droits réservés.</p>
-        </div>
-      </footer>
+  <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div className="flex items-center gap-2">
+      <AppLogoMark size="sm" />
+      <BrandName className="text-xs text-ink-soft" />
+    </div>
+    <div className="flex flex-col items-center sm:items-end gap-1">
+      <div className="flex gap-3 text-xs text-ink-soft">
+        <Link href="/conditions-utilisation" className="hover:text-ink">Conditions</Link>
+        <Link href="/confidentialite" className="hover:text-ink">Confidentialité</Link>
+      </div>
+      <p className="text-xs text-ink-soft/70">© {new Date().getFullYear()} Ferme F001. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>
     </div>
   )
 }

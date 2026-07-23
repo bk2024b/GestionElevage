@@ -1,6 +1,6 @@
 {
-  "name": "Élevage Lapins",
-  "short_name": "Élevage",
+  "name": "Ferme F001",
+  "short_name": "F001",
   "description": "Gestion complète d'élevage cunicole",
   "start_url": "/dashboard",
   "scope": "/",

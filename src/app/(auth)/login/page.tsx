@@ -2,6 +2,7 @@ import { signIn } from '../actions'
 import { Input, Field } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import { BrandName } from '@/components/ui/BrandName'
 
 export default async function LoginPage({
   searchParams,
@@ -16,7 +17,8 @@ export default async function LoginPage({
         <span className="w-12 h-12 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-sm mb-3">
           EL
         </span>
-        <h1 className="text-xl font-display font-semibold">Connexion</h1>
+        <BrandName className="text-base font-display font-semibold" />
+<h1 className="text-xl font-display font-semibold mt-1">Connexion</h1>
         <p className="text-sm text-ink-soft mt-1">Retrouve ton élevage</p>
       </div>
 
