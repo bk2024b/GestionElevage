@@ -1,9 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { supprimerTransaction } from './actions'
 import { CATEGORIES_DEPENSE, CATEGORIES_REVENU, formatFCFA } from '@/lib/finances'
-import { Card, StatCard } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { Plus, X } from 'lucide-react'
+import { TrendingUp, TrendingDown, Scale } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function FinancesPage() {
@@ -19,42 +19,51 @@ export default async function FinancesPage() {
   const benefice = revenus - depenses
 
   return (
-    <div className="px-5 py-6 max-w-md mx-auto">
+    <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-xl font-display font-semibold">Finances</h1>
+        <h1 className="text-xl md:text-2xl font-display font-semibold">Finances</h1>
         <div className="flex gap-2">
-          <Link href="/finances/nouveau?type=revenu" className="tap text-xs bg-success/10 text-success px-3 py-2 rounded-card">
+          <Link href="/finances/nouveau?type=revenu" className="tap text-xs bg-success/10 text-success px-3 py-2.5 rounded-card font-medium">
             + Revenu
           </Link>
-          <Link href="/finances/nouveau?type=depense" className="tap text-xs bg-danger/10 text-danger px-3 py-2 rounded-card">
+          <Link href="/finances/nouveau?type=depense" className="tap text-xs bg-danger/10 text-danger px-3 py-2.5 rounded-card font-medium">
             + Dépense
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-6">
-        <Card className="px-2 py-3">
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <Card className="!p-4">
+          <span className="w-9 h-9 rounded-full bg-success/10 text-success flex items-center justify-center mb-2">
+            <TrendingUp size={16} />
+          </span>
           <p className="text-xs text-ink-soft">Revenus</p>
-          <p className="text-sm font-medium text-success">{formatFCFA(revenus)}</p>
+          <p className="text-sm md:text-lg font-display font-semibold text-success">{formatFCFA(revenus)}</p>
         </Card>
-        <Card className="px-2 py-3">
+        <Card className="!p-4">
+          <span className="w-9 h-9 rounded-full bg-danger/10 text-danger flex items-center justify-center mb-2">
+            <TrendingDown size={16} />
+          </span>
           <p className="text-xs text-ink-soft">Dépenses</p>
-          <p className="text-sm font-medium text-danger">{formatFCFA(depenses)}</p>
+          <p className="text-sm md:text-lg font-display font-semibold text-danger">{formatFCFA(depenses)}</p>
         </Card>
-        <Card className="px-2 py-3">
+        <Card className="!p-4">
+          <span className="w-9 h-9 rounded-full bg-accent-soft text-accent flex items-center justify-center mb-2">
+            <Scale size={16} />
+          </span>
           <p className="text-xs text-ink-soft">Bénéfice</p>
-          <p className={`text-sm font-medium ${benefice >= 0 ? 'text-success' : 'text-danger'}`}>{formatFCFA(benefice)}</p>
+          <p className={`text-sm md:text-lg font-display font-semibold ${benefice >= 0 ? 'text-accent' : 'text-danger'}`}>{formatFCFA(benefice)}</p>
         </Card>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="md:grid md:grid-cols-2 md:gap-3 flex flex-col gap-2 md:flex-none">
         {transactions?.map((t) => {
           const supprimerAvecId = supprimerTransaction.bind(null, t.id)
           const label = t.type === 'revenu' ? CATEGORIES_REVENU[t.categorie] : CATEGORIES_DEPENSE[t.categorie]
           const estAutomatique = t.soin_id || t.alimentation_id
 
           return (
-            <Card key={t.id} className="flex items-center gap-3">
+            <Card key={t.id} className="!p-4 flex items-center gap-3">
               <div className="flex-1">
                 <div className="flex items-center gap-1.5">
                   <p className="text-sm">{label || t.categorie}</p>
@@ -70,9 +79,7 @@ export default async function FinancesPage() {
               </span>
               {!estAutomatique && (
                 <form action={supprimerAvecId}>
-                  <button type="submit" className="tap text-ink-soft/50">
-                    <X size={14} />
-                  </button>
+                  <button type="submit" className="tap text-ink-soft/50">✕</button>
                 </form>
               )}
             </Card>
@@ -80,7 +87,7 @@ export default async function FinancesPage() {
         })}
 
         {transactions?.length === 0 && (
-          <div className="text-center py-12">
+          <div className="md:col-span-2 text-center py-16">
             <p className="text-sm text-ink-soft mb-1">Aucune transaction enregistrée.</p>
             <p className="text-xs text-ink-soft/70">Ajoute un revenu ou une dépense pour commencer.</p>
           </div>

@@ -24,22 +24,27 @@ export default async function SantePage() {
     .order('date_soin', { ascending: false })
 
   return (
-    <div className="px-5 py-6 max-w-md mx-auto">
+    <div className="max-w-md md:max-w-5xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-xl font-display font-semibold">Santé & soins</h1>
-        <Link href="/sante/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-3 py-2 rounded-card">
+        <div>
+          <h1 className="text-xl md:text-2xl font-display font-semibold">Santé & soins</h1>
+          <p className="text-xs text-ink-soft mt-0.5 hidden md:block">
+            {soins?.length ?? 0} soin{(soins?.length ?? 0) > 1 ? 's' : ''} enregistré{(soins?.length ?? 0) > 1 ? 's' : ''}
+          </p>
+        </div>
+        <Link href="/sante/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-4 py-2.5 rounded-card">
           <Plus size={16} />
           Soin
         </Link>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="md:grid md:grid-cols-3 md:gap-4 flex flex-col gap-2 md:flex-none">
         {soins?.map((s: any) => {
           const supprimerAvecId = supprimerSoin.bind(null, s.id)
 
           return (
             <Card key={s.id}>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-2">
                 <EarTagBadge identifiant={s.lapin.identifiant} sexe={s.lapin.sexe} />
                 <Badge ton={TON_TYPE_SOIN[s.type]}>{LABEL_TYPE_SOIN[s.type]}</Badge>
               </div>
@@ -55,13 +60,13 @@ export default async function SantePage() {
                   </button>
                 </form>
               </div>
-              {s.notes && <p className="text-xs text-ink-soft mt-1">{s.notes}</p>}
+              {s.notes && <p className="text-xs text-ink-soft mt-2">{s.notes}</p>}
             </Card>
           )
         })}
 
         {soins?.length === 0 && (
-          <div className="text-center py-12">
+          <div className="md:col-span-3 text-center py-16">
             <p className="text-sm text-ink-soft mb-1">Aucun soin enregistré.</p>
             <p className="text-xs text-ink-soft/70">Enregistre un vaccin, traitement ou contrôle vétérinaire.</p>
           </div>

@@ -22,10 +22,10 @@ export default async function RappelsPage() {
     .limit(10)
 
   return (
-    <div className="px-5 py-6 max-w-md mx-auto">
-      <h1 className="text-xl font-display font-semibold mb-5">Rappels</h1>
+    <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
+      <h1 className="text-xl md:text-2xl font-display font-semibold mb-5">Rappels</h1>
 
-      <div className="flex flex-col gap-2 mb-6">
+      <div className="md:grid md:grid-cols-2 md:gap-3 flex flex-col gap-2 md:flex-none mb-6">
         {rappels?.map((r: any) => {
           const marquerAvecId = marquerRappelVu.bind(null, r.id)
           const retard = estEnRetard(r.date_prevue)
@@ -34,7 +34,7 @@ export default async function RappelsPage() {
           return (
             <Card
               key={r.id}
-              className={`flex items-center gap-3 ${
+              className={`!p-4 flex items-center gap-3 ${
                 retard ? 'bg-danger/5 border-danger/30' : aujourdhui ? 'bg-accent-soft border-accent/30' : ''
               }`}
             >
@@ -56,7 +56,7 @@ export default async function RappelsPage() {
         })}
 
         {rappels?.length === 0 && (
-          <div className="text-center py-12">
+          <div className="md:col-span-2 text-center py-16">
             <p className="text-sm text-ink-soft mb-1">Aucun rappel en attente.</p>
             <p className="text-xs text-ink-soft/70">Tout est à jour.</p>
           </div>
@@ -65,10 +65,10 @@ export default async function RappelsPage() {
 
       {rappelsVus && rappelsVus.length > 0 && (
         <>
-          <p className="text-xs text-ink-soft/70 mb-2">Récemment traités</p>
-          <div className="flex flex-col gap-2">
+          <p className="text-xs text-ink-soft mb-2">Récemment traités</p>
+          <div className="md:grid md:grid-cols-2 md:gap-3 flex flex-col gap-2 md:flex-none">
             {rappelsVus.map((r: any) => (
-              <Card key={r.id} className="flex items-center gap-3 opacity-50">
+              <Card key={r.id} className="!p-4 flex items-center gap-3 opacity-50">
                 {r.lapin && <EarTagBadge identifiant={r.lapin.identifiant} sexe={r.lapin.sexe} />}
                 <p className="text-sm flex-1">{LABEL_TYPE_RAPPEL[r.type] || r.message}</p>
                 <p className="text-xs text-ink-soft">{new Date(r.date_prevue).toLocaleDateString('fr-FR')}</p>

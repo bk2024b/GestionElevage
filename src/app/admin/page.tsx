@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Input, Field } from '@/components/ui/Input'
 import { Button, ButtonLink } from '@/components/ui/Button'
+import { Users, Clock, AlertCircle } from 'lucide-react'
 
 const LABEL_STATUT: Record<string, string> = {
   essai: 'Essai',
@@ -42,10 +43,10 @@ export default async function AdminPage({
   const nbExpires = (abonnements ?? []).filter((a) => a.statut === 'expire').length
 
   return (
-    <div className="px-5 py-6 max-w-2xl mx-auto">
+    <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-xl font-display font-semibold">Administration</h1>
-        <ButtonLink href="/admin/ressources" variante="secondaire" className="text-xs py-2">
+        <h1 className="text-xl md:text-2xl font-display font-semibold">Administration</h1>
+        <ButtonLink href="/admin/ressources" variante="secondaire" className="text-xs py-2.5">
           Gérer les ressources
         </ButtonLink>
       </div>
@@ -55,12 +56,24 @@ export default async function AdminPage({
       )}
 
       <div className="grid grid-cols-3 gap-3 mb-6">
-        <Card><p className="text-xs text-ink-soft">Abonnés actifs</p><p className="text-2xl font-display font-semibold">{nbActifs}</p></Card>
-        <Card><p className="text-xs text-ink-soft">En essai</p><p className="text-2xl font-display font-semibold">{nbEssai}</p></Card>
-        <Card><p className="text-xs text-ink-soft">Expirés</p><p className="text-2xl font-display font-semibold">{nbExpires}</p></Card>
+        <Card className="!p-4">
+          <Users size={20} strokeWidth={1.6} className="text-success mb-2" />
+          <p className="text-xs text-ink-soft">Abonnés actifs</p>
+          <p className="text-xl font-display font-semibold">{nbActifs}</p>
+        </Card>
+        <Card className="!p-4">
+          <Clock size={20} strokeWidth={1.6} className="text-ink-soft mb-2" />
+          <p className="text-xs text-ink-soft">En essai</p>
+          <p className="text-xl font-display font-semibold">{nbEssai}</p>
+        </Card>
+        <Card className="!p-4">
+          <AlertCircle size={20} strokeWidth={1.6} className="text-danger mb-2" />
+          <p className="text-xs text-ink-soft">Expirés</p>
+          <p className="text-xl font-display font-semibold">{nbExpires}</p>
+        </Card>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="md:grid md:grid-cols-2 md:gap-4 flex flex-col gap-3 md:flex-none">
         {profils?.map((p) => {
           const abonnement = abonnementParUser.get(p.id)
           const jours = abonnement ? joursRestants(abonnement.date_fin) : 0
