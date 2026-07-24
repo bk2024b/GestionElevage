@@ -20,7 +20,7 @@
   --font-mono: var(--font-plex-mono), monospace;
 
   /* Radius */
-  --radius-card: 18px;
+  --radius-card: 22px;
   --radius-pill: 999px;
 }
 
