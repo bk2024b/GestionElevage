@@ -3,6 +3,7 @@ import { Sora, Inter, IBM_Plex_Mono } from 'next/font/google'
 import { PwaRegister } from '@/components/PwaRegister'
 import './globals.css'
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const sora = Sora({ subsets: ['latin'], variable: '--font-sora', weight: ['500', '600', '700'] })
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PwaRegister />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
