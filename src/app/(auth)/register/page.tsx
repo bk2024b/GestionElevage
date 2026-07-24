@@ -1,8 +1,9 @@
 import { signUp } from '../actions'
 import { Input, Field } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
-import Link from 'next/link'
+import { AppLogoMark } from '@/components/ui/AppLogoMark'
 import { BrandName } from '@/components/ui/BrandName'
+import Link from 'next/link'
 
 export default async function RegisterPage({
   searchParams,
@@ -14,11 +15,9 @@ export default async function RegisterPage({
   return (
     <div className="min-h-screen flex flex-col justify-center px-6 max-w-sm mx-auto py-10">
       <div className="flex flex-col items-center mb-8">
-        <span className="w-12 h-12 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-sm mb-3">
-          EL
-        </span>
-        <BrandName className="text-base font-display font-semibold" />
-<h1 className="text-xl font-display font-semibold mt-1">Créer un compte</h1>
+        <AppLogoMark size="lg" />
+        <BrandName className="text-base font-display font-semibold mt-3" />
+        <h1 className="text-xl font-display font-semibold mt-1">Créer un compte</h1>
         <p className="text-sm text-ink-soft mt-1">Gratuit, prêt en une minute</p>
       </div>
 
@@ -39,15 +38,17 @@ export default async function RegisterPage({
         <Field label="Mot de passe">
           <Input name="password" type="password" required minLength={6} />
         </Field>
+
         <label className="flex items-start gap-2 text-xs text-ink-soft">
-  <input type="checkbox" required className="w-4 h-4 mt-0.5" />
-  <span>
-    J'accepte les{' '}
-    <a href="/conditions-utilisation" target="_blank" className="text-ink underline">Conditions d'utilisation</a>
-    {' '}et la{' '}
-    <a href="/confidentialite" target="_blank" className="text-ink underline">Politique de Confidentialité</a>
-  </span>
-</label>
+          <input type="checkbox" required className="w-4 h-4 mt-0.5" />
+          <span>
+            J'accepte les{' '}
+            <a href="/conditions-utilisation" target="_blank" className="text-ink underline">Conditions d'utilisation</a>
+            {' '}et la{' '}
+            <a href="/confidentialite" target="_blank" className="text-ink underline">Politique de Confidentialité</a>
+          </span>
+        </label>
+
         <Button type="submit" variante="primaire" className="mt-2">
           Créer mon compte
         </Button>

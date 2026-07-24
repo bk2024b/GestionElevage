@@ -1,8 +1,9 @@
 import { signIn } from '../actions'
 import { Input, Field } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
-import Link from 'next/link'
+import { AppLogoMark } from '@/components/ui/AppLogoMark'
 import { BrandName } from '@/components/ui/BrandName'
+import Link from 'next/link'
 
 export default async function LoginPage({
   searchParams,
@@ -14,11 +15,9 @@ export default async function LoginPage({
   return (
     <div className="min-h-screen flex flex-col justify-center px-6 max-w-sm mx-auto">
       <div className="flex flex-col items-center mb-8">
-        <span className="w-12 h-12 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-sm mb-3">
-          EL
-        </span>
-        <BrandName className="text-base font-display font-semibold" />
-<h1 className="text-xl font-display font-semibold mt-1">Connexion</h1>
+        <AppLogoMark size="lg" />
+        <BrandName className="text-base font-display font-semibold mt-3" />
+        <h1 className="text-xl font-display font-semibold mt-1">Connexion</h1>
         <p className="text-sm text-ink-soft mt-1">Retrouve ton élevage</p>
       </div>
 
