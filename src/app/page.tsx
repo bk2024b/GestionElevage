@@ -152,8 +152,15 @@ export default async function LandingPage() {
         <Link href="/conditions-utilisation" className="hover:text-ink">Conditions</Link>
         <Link href="/confidentialite" className="hover:text-ink">Confidentialité</Link>
       </div>
-      <p className="text-xs text-ink-soft/70">© {new Date().getFullYear()} Ferme F001. Tous droits réservés.</p>
+      <div className="flex flex-col items-center sm:items-end gap-1">
+  <div className="flex gap-3 text-xs text-ink-soft">
+    <Link href="/conditions-utilisation" className="hover:text-ink">Conditions</Link>
+    <Link href="/confidentialite" className="hover:text-ink">Confidentialité</Link>
+  </div>
+  <p className="text-xs text-ink-soft/70">© {new Date().getFullYear()} Ferme F001. Tous droits réservés.</p>
     </div>
+</div>
+      
   </div>
 </footer>
     </div>

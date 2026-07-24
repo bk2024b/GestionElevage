@@ -39,6 +39,15 @@ export default async function RegisterPage({
         <Field label="Mot de passe">
           <Input name="password" type="password" required minLength={6} />
         </Field>
+        <label className="flex items-start gap-2 text-xs text-ink-soft">
+  <input type="checkbox" required className="w-4 h-4 mt-0.5" />
+  <span>
+    J'accepte les{' '}
+    <a href="/conditions-utilisation" target="_blank" className="text-ink underline">Conditions d'utilisation</a>
+    {' '}et la{' '}
+    <a href="/confidentialite" target="_blank" className="text-ink underline">Politique de Confidentialité</a>
+  </span>
+</label>
         <Button type="submit" variante="primaire" className="mt-2">
           Créer mon compte
         </Button>
