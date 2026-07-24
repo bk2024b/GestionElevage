@@ -6,6 +6,7 @@ import { classifierLapin } from '@/lib/lapins'
 import { Card } from '@/components/ui/Card'
 import { QuickAction } from '@/components/ui/QuickAction'
 import Link from 'next/link'
+import { MobileMenu } from '@/components/ui/MobileMenu'
 import {
   Rabbit,
   Baby,
@@ -94,9 +95,7 @@ export default async function DashboardPage() {
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       {/* En-tête léger */}
       <div className="flex items-center justify-between mb-6">
-        <button className="md:hidden text-ink">
-          <Menu size={22} />
-        </button>
+        <MobileMenu isAdmin={profilComplet?.role === 'admin'} />
         <div className="hidden md:block" />
         <Link href="/rappels" className="tap relative w-10 h-10 flex items-center justify-center rounded-full">
           <Bell size={20} className="text-ink" />
