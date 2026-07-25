@@ -39,7 +39,7 @@ export default async function AccesSuspenduPage({
         </Button>
       </form>
 
-      
+      <a
         href="https://wa.me/22940545270"
         target="_blank"
         rel="noopener noreferrer"
