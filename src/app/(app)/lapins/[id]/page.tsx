@@ -36,11 +36,11 @@ export default async function FicheLapinPage({
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       <div className="flex items-center gap-3 mb-5">
         <EarTagBadge identifiant={lapin.identifiant} sexe={lapin.sexe} />
-        <h1 className="text-xl md:text-2xl font-display font-semibold">{lapin.nom || 'Sans nom'}</h1>
+        <h1 className="text-xl md:text-2xl font-bold">{lapin.nom || 'Sans nom'}</h1>
       </div>
 
       {error && (
-        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-control px-3 py-2 mb-3">{error}</p>
       )}
 
       <div className="md:grid md:grid-cols-2 md:gap-8 md:items-start">
@@ -80,7 +80,7 @@ export default async function FicheLapinPage({
         </Card>
 
         <div>
-          <h2 className="text-sm font-medium text-ink-soft mb-3">Historique</h2>
+          <h2 className="text-sm font-semibold text-ink-soft mb-3">Historique</h2>
           <div className="flex flex-col gap-2 md:max-h-[600px] md:overflow-y-auto md:pr-1">
             {historique.map((e, idx) => (
               <Card key={idx} className="!p-4 flex items-start gap-2">
