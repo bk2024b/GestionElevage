@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { creerAccouplement } from '../actions'
 import { Input, Textarea, Select, Field } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 
 export default async function NouvelAccouplementPage({
   searchParams,
@@ -26,51 +27,53 @@ export default async function NouvelAccouplementPage({
     .order('identifiant')
 
   return (
-    <div className="px-5 py-6 max-w-md mx-auto">
-      <h1 className="text-xl font-display font-semibold mb-5">Nouvel accouplement</h1>
+    <div className="max-w-md mx-auto px-5 py-6">
+      <h1 className="text-xl font-bold mb-5">Nouvel accouplement</h1>
 
       {error && (
-        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-control px-3 py-2 mb-3">{error}</p>
       )}
 
       {(!femelles?.length || !males?.length) && (
-        <p className="text-sm text-accent bg-accent-soft rounded-card px-3 py-2 mb-3">
+        <p className="text-sm text-accent bg-accent-soft rounded-control px-3 py-2 mb-3">
           Il te faut au moins une femelle et un mâle actifs pour enregistrer un accouplement.
         </p>
       )}
 
-      <form action={creerAccouplement} className="flex flex-col gap-3">
-        <Field label="Femelle">
-          <Select name="femelle_id" required>
-            {femelles?.map((f) => (
-              <option key={f.id} value={f.id}>{f.identifiant} — {f.nom || 'sans nom'}</option>
-            ))}
-          </Select>
-        </Field>
+      <Card>
+        <form action={creerAccouplement} className="flex flex-col gap-3">
+          <Field label="Femelle">
+            <Select name="femelle_id" required>
+              {femelles?.map((f) => (
+                <option key={f.id} value={f.id}>{f.identifiant} — {f.nom || 'sans nom'}</option>
+              ))}
+            </Select>
+          </Field>
 
-        <Field label="Mâle">
-          <Select name="male_id" required>
-            {males?.map((m) => (
-              <option key={m.id} value={m.id}>{m.identifiant} — {m.nom || 'sans nom'}</option>
-            ))}
-          </Select>
-        </Field>
+          <Field label="Mâle">
+            <Select name="male_id" required>
+              {males?.map((m) => (
+                <option key={m.id} value={m.id}>{m.identifiant} — {m.nom || 'sans nom'}</option>
+              ))}
+            </Select>
+          </Field>
 
-        <Field label="Date d'accouplement">
-          <Input
-            name="date_accouplement"
-            type="date"
-            required
-            defaultValue={new Date().toISOString().split('T')[0]}
-          />
-        </Field>
+          <Field label="Date d'accouplement">
+            <Input
+              name="date_accouplement"
+              type="date"
+              required
+              defaultValue={new Date().toISOString().split('T')[0]}
+            />
+          </Field>
 
-        <Textarea name="notes" placeholder="Notes" rows={2} />
+          <Textarea name="notes" placeholder="Notes" rows={2} />
 
-        <Button type="submit" variante="primaire" className="mt-1">
-          Enregistrer
-        </Button>
-      </form>
+          <Button type="submit" variante="primaire" className="mt-1">
+            Enregistrer
+          </Button>
+        </form>
+      </Card>
     </div>
   )
 }

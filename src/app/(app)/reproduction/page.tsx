@@ -15,11 +15,11 @@ const LABEL_STATUT: Record<string, string> = {
   terminee: 'Terminée',
 }
 
-const TON_STATUT: Record<string, 'success' | 'neutre' | 'danger'> = {
+const TON_STATUT: Record<string, 'success' | 'neutre' | 'danger' | 'attention'> = {
   en_cours: 'neutre',
   confirmee: 'success',
   echouee: 'danger',
-  terminee: 'success',
+  terminee: 'attention',
 }
 
 function palpationDue(dateAccouplement: string) {
@@ -44,14 +44,16 @@ export default async function ReproductionPage() {
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
         <div>
-          <h1 className="text-xl md:text-2xl font-display font-semibold">Reproduction</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Reproduction</h1>
           <p className="text-xs text-ink-soft mt-0.5 hidden md:block">
             {accouplements?.length ?? 0} accouplement{(accouplements?.length ?? 0) > 1 ? 's' : ''} enregistré{(accouplements?.length ?? 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <Link href="/reproduction/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-4 py-2.5 rounded-card">
-          <Plus size={16} />
-          Accouplement
+        <Link href="/reproduction/nouveau">
+          <Button variante="primaire" className="flex items-center gap-1">
+            <Plus size={16} />
+            Accouplement
+          </Button>
         </Link>
       </div>
 
@@ -87,13 +89,13 @@ export default async function ReproductionPage() {
               </div>
 
               {a.statut === 'confirmee' && (
-                <p className="text-xs bg-success/10 text-success rounded-card px-3 py-2 mb-3">
+                <p className="text-xs bg-accent-green-soft text-accent-green rounded-control px-3 py-2 mb-3">
                   Gestation confirmée — mise bas prévue le {new Date(a.date_misebas_prevue).toLocaleDateString('fr-FR')}
                 </p>
               )}
 
               {a.statut === 'echouee' && (
-                <p className="text-xs bg-danger/10 text-danger rounded-card px-3 py-2 mb-3">
+                <p className="text-xs bg-danger/10 text-danger rounded-control px-3 py-2 mb-3">
                   Accouplement échoué — un nouvel essai peut être planifié
                 </p>
               )}
@@ -103,12 +105,12 @@ export default async function ReproductionPage() {
                   <p className="text-xs text-ink-soft mb-2">Palpation à effectuer — la femelle est-elle gestante ?</p>
                   <div className="flex gap-2">
                     <form action={confirmerPalpation.bind(null, a.id, 'oui')} className="flex-1">
-                      <Button type="submit" className="w-full bg-success text-paper text-xs py-2">
+                      <Button type="submit" variante="primaire" className="w-full text-xs py-2">
                         Oui, gestante
                       </Button>
                     </form>
                     <form action={confirmerPalpation.bind(null, a.id, 'non')} className="flex-1">
-                      <Button type="submit" className="w-full bg-danger text-paper text-xs py-2">
+                      <Button type="submit" variante="danger" className="w-full text-xs py-2 border border-danger/30">
                         Non, échouée
                       </Button>
                     </form>
