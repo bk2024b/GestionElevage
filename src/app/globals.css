@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors */
-  --color-ink: #1F2B22;
-  --color-ink-soft: #4B5A4E;
-  --color-paper: #F5F3EA;
-  --color-surface: #FFFFFF;
-  --color-line: #E4E0D3;
+  /* Surfaces & texte */
+  --color-ink: #1F2B22;           /* vert foncé — sidebar, texte fort, boutons pleins */
+  --color-ink-soft: #4B4B4B;      /* texte secondaire */
+  --color-text-tertiary: #888888; /* texte tertiaire, légendes discrètes */
+  --color-paper: #F8F8F5;         /* fond général — gris clair épuré */
+  --color-surface: #FFFFFF;       /* cartes, champs */
+  --color-surface-secondary: #F1F1F1; /* surfaces secondaires, zones désactivées */
+  --color-line: #E6E6E6;          /* bordures, séparateurs */
 
-  --color-accent: #C97B3D;
+  /* Accents */
+  --color-accent: #C97B3D;        /* orange — actions, alertes importantes */
   --color-accent-soft: #F3DCC4;
+  --color-accent-green: #4F8A57;  /* vert — accent principal, statuts positifs */
+  --color-accent-green-soft: #E3EFE5;
 
-  --color-success: #5B8C5A;
+  --color-success: #4F8A57;
   --color-danger: #B5482E;
 
-  /* Fonts */
-  --font-display: var(--font-sora), sans-serif;
+  /* Fonts — Inter seul, plus de Sora */
+  --font-display: var(--font-inter), sans-serif;
   --font-sans: var(--font-inter), sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
 
-  /* Radius */
-  --radius-card: 22px;
+  /* Rayon — cartes vs contrôles distincts désormais */
+  --radius-card: 12px;
+  --radius-control: 8px;
   --radius-pill: 999px;
 }
 
@@ -28,24 +34,18 @@
   html {
     -webkit-tap-highlight-color: transparent;
   }
-
   body {
     @apply bg-paper text-ink font-sans;
     overscroll-behavior-y: none;
   }
-
-  h1,
-  h2,
-  h3 {
+  h1, h2, h3 {
     @apply font-display;
   }
-
   ::selection {
-    @apply bg-accent-soft text-ink;
+    @apply bg-accent-green-soft text-ink;
   }
-
   *:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-accent-green);
     outline-offset: 2px;
   }
 }
@@ -54,15 +54,12 @@
   .safe-top {
     padding-top: env(safe-area-inset-top);
   }
-
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-
   .tap {
     @apply transition-transform duration-100 active:scale-[0.97];
   }
-
   @media (prefers-reduced-motion: reduce) {
     .tap {
       transition: none;

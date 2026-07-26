@@ -1,13 +1,10 @@
 import type { Metadata, Viewport } from 'next'
-import { Sora, Inter, IBM_Plex_Mono } from 'next/font/google'
+import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import { PwaRegister } from '@/components/PwaRegister'
 import './globals.css'
-import { Analytics } from "@vercel/analytics/next"
 
-const sora = Sora({ subsets: ['latin'], variable: '--font-sora', weight: ['500', '600', '700'] })
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const plexMono = IBM_Plex_Mono({ subsets: ['latin'], variable: '--font-plex-mono', weight: ['500'] })
-
 
 export const metadata: Metadata = {
   title: 'Ferme F001',
@@ -38,10 +35,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
-      <body className={`${sora.variable} ${inter.variable} ${plexMono.variable}`}>
+      <body className={`${inter.variable} ${plexMono.variable}`}>
         <PwaRegister />
         {children}
-        <Analytics />
       </body>
     </html>
   )
