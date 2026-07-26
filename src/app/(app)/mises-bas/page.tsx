@@ -32,14 +32,16 @@ export default async function MisesBasPage() {
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
         <div>
-          <h1 className="text-xl md:text-2xl font-display font-semibold">Mises bas</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Mises bas</h1>
           <p className="text-xs text-ink-soft mt-0.5 hidden md:block">
             {misesBas?.length ?? 0} mise{(misesBas?.length ?? 0) > 1 ? 's' : ''} bas enregistrée{(misesBas?.length ?? 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <Link href="/mises-bas/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-4 py-2.5 rounded-card">
-          <Plus size={16} />
-          Mise bas
+        <Link href="/mises-bas/nouveau">
+          <Button variante="primaire" className="flex items-center gap-1">
+            <Plus size={16} />
+            Mise bas
+          </Button>
         </Link>
       </div>
 
@@ -86,7 +88,7 @@ export default async function MisesBasPage() {
               )}
 
               {dejaSevre ? (
-                <p className="text-xs bg-success/10 text-success rounded-card px-3 py-2 mt-3">
+                <p className="text-xs bg-accent-green-soft text-accent-green rounded-control px-3 py-2 mt-3">
                   Sevré le {new Date(m.sevrages[0].date_sevrage).toLocaleDateString('fr-FR')}
                   {m.sevrages[0].nb_survivants != null && ` — ${m.sevrages[0].nb_survivants} survivants`}
                   {m.sevrages[0].poids_moyen != null && ` — ${m.sevrages[0].poids_moyen} kg moyen`}
@@ -110,7 +112,7 @@ export default async function MisesBasPage() {
                   </Button>
                 </form>
               ) : (
-                <p className="text-xs text-accent bg-accent-soft rounded-card px-3 py-2 mt-3">
+                <p className="text-xs text-accent bg-accent-soft rounded-control px-3 py-2 mt-3">
                   Sevrage possible à partir du {new Date(dateSevrageMinimum(m.date_misebas)).toLocaleDateString('fr-FR')}
                 </p>
               )}
