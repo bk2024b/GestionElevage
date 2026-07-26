@@ -15,11 +15,11 @@ const LABEL_STATUT: Record<string, string> = {
   terminee: 'Terminée',
 }
 
-const TON_STATUT: Record<string, 'success' | 'neutre' | 'danger' | 'accent'> = {
+const TON_STATUT: Record<string, 'success' | 'neutre' | 'danger'> = {
   en_cours: 'neutre',
   confirmee: 'success',
   echouee: 'danger',
-  terminee: 'accent',
+  terminee: 'success',
 }
 
 function palpationDue(dateAccouplement: string) {
