@@ -72,7 +72,7 @@ function RessourceCard({ ressource }: { ressource: any }) {
               <p className="text-xs text-ink-soft mt-0.5">{ressource.categorie}</p>
             )}
           </div>
-          <Badge ton={ressource.gratuit ? 'success' : 'secondary'}>
+          <Badge ton={ressource.gratuit ? 'success' : undefined}>
             {ressource.gratuit ? 'Gratuit' : 'Payant'}
           </Badge>
         </div>
