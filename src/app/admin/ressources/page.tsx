@@ -46,7 +46,7 @@ export default async function AdminRessourcesPage({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <p className="text-sm font-medium truncate">{r.titre}</p>
-                  <Badge ton={r.gratuit ? 'success' : 'accent'}>{r.gratuit ? 'Gratuit' : 'Payant'}</Badge>
+                  <Badge ton={r.gratuit ? 'success' : undefined}>{r.gratuit ? 'Gratuit' : 'Payant'}</Badge>
                   {!r.publie && <Badge ton="neutre">Brouillon</Badge>}
                 </div>
                 <p className="text-xs text-ink-soft">{r.type === 'cours' ? 'Formation' : 'Document'} {r.categorie ? `· ${r.categorie}` : ''}</p>
