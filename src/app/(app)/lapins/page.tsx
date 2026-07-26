@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { Plus, Rabbit } from 'lucide-react'
 
@@ -28,17 +29,16 @@ export default async function LapinsPage() {
     <div className="max-w-md md:max-w-5xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
         <div>
-          <h1 className="text-xl md:text-2xl font-display font-semibold">Mes lapins</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Mes lapins</h1>
           <p className="text-xs text-ink-soft mt-0.5 hidden md:block">
             {lapins?.length ?? 0} lapin{(lapins?.length ?? 0) > 1 ? 's' : ''} enregistré{(lapins?.length ?? 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <Link
-          href="/lapins/nouveau"
-          className="tap flex items-center gap-1 text-sm bg-ink text-paper px-4 py-2.5 rounded-card"
-        >
-          <Plus size={16} />
-          Ajouter
+        <Link href="/lapins/nouveau">
+          <Button variante="primaire" className="flex items-center gap-1">
+            <Plus size={16} />
+            Ajouter
+          </Button>
         </Link>
       </div>
 
@@ -66,8 +66,8 @@ export default async function LapinsPage() {
           <Link key={lapin.id} href={`/lapins/${lapin.id}`} className="tap">
             <Card className="h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <span className={`w-11 h-11 rounded-full flex items-center justify-center ${lapin.sexe === 'F' ? 'bg-danger/10 text-danger' : 'bg-ink/10 text-ink'}`}>
-                  <Rabbit size={20} strokeWidth={1.6} />
+                <span className={`w-11 h-11 rounded-control flex items-center justify-center ${lapin.sexe === 'F' ? 'bg-danger/10 text-danger' : 'bg-accent-green-soft text-accent-green'}`}>
+                  <Rabbit size={20} strokeWidth={2} />
                 </span>
                 <Badge ton={TON_STATUT[lapin.statut]}>{LABEL_STATUT[lapin.statut]}</Badge>
               </div>
