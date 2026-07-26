@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/Badge'
 import { Plus, X } from 'lucide-react'
 import Link from 'next/link'
 
-const TON_TYPE_SOIN: Record<string, 'danger' | 'accent' | 'neutre' | 'success'> = {
+const TON_TYPE_SOIN: Record<string, 'danger' | 'neutre' | 'success'> = {
   maladie: 'danger',
-  traitement: 'accent',
+  traitement: 'neutre',
   vaccin: 'neutre',
   controle_veto: 'success',
 }
