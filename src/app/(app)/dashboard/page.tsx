@@ -1,221 +1,150 @@
 import { createClient } from '@/lib/supabase/server'
-import { EarTagBadge } from '@/components/lapins/EarTagBadge'
-import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
-import { formatFCFA } from '@/lib/finances'
 import { classifierLapin } from '@/lib/lapins'
-import { Card } from '@/components/ui/Card'
-import { QuickAction } from '@/components/ui/QuickAction'
+import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
+import { StatCardIcone, TrendCard, AlertCard, Card } from '@/components/ui/Card'
+import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import Link from 'next/link'
-import { MobileMenu } from '@/components/ui/MobileMenu'
 import {
   Rabbit,
   Baby,
-  Venus,
-  Mars,
-  HeartPulse,
   Stethoscope,
-  Wheat,
-  CalendarDays,
-  BarChart3,
-  Settings,
-  BookOpen,
   Bell,
-  TrendingUp,
-  TrendingDown,
-  Menu,
+  ChevronRight,
 } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const { data: profilComplet } = await supabase.from('profils').select('nom, nom_elevage, role').eq('id', user!.id).single()
+  const { data: profil } = await supabase.from('profils').select('nom, nom_elevage').eq('id', user!.id).single()
 
-  const debutMois = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-    .toISOString()
-    .split('T')[0]
+  const debutMois = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]
+  const aujourdhui = new Date().toISOString().split('T')[0]
+  const ilYa30Jours = new Date()
+  ilYa30Jours.setDate(ilYa30Jours.getDate() - 30)
 
-  const { data: lapinsActifs } = await supabase
-    .from('lapins')
-    .select('sexe, date_naissance, age_premiere_saillie')
-    .eq('statut', 'actif')
-
-  const { count: nbLapinsTotal } = await supabase
-    .from('lapins')
-    .select('*', { count: 'exact', head: true })
-
+  // KPIs
+  const { count: nbLapinsTotal } = await supabase.from('lapins').select('*', { count: 'exact', head: true })
   const { count: nbNouveauxCeMois } = await supabase
-    .from('lapins')
-    .select('*', { count: 'exact', head: true })
-    .gte('created_at', debutMois)
+    .from('lapins').select('*', { count: 'exact', head: true }).gte('created_at', debutMois)
 
-  let nbFemellesReproductrices = 0
-  let nbMalesReproducteurs = 0
-  let nbJeunes = 0
+  const { data: misesBasMois } = await supabase
+    .from('mises_bas').select('nes_vivants').gte('date_misebas', debutMois)
+  const naissancesMois = (misesBasMois ?? []).reduce((s, m) => s + m.nes_vivants, 0)
 
-  for (const l of lapinsActifs ?? []) {
-    const categorie = classifierLapin(l)
-    if (categorie === 'jeune') {
-      nbJeunes++
-    } else if (l.sexe === 'F') {
-      nbFemellesReproductrices++
-    } else {
-      nbMalesReproducteurs++
-    }
-  }
-
-  const { count: nbGestantes } = await supabase
-    .from('accouplements')
-    .select('*', { count: 'exact', head: true })
-    .in('statut', ['en_cours', 'confirmee'])
+  const { count: soinsAujourdhui } = await supabase
+    .from('soins').select('*', { count: 'exact', head: true }).eq('date_soin', aujourdhui)
 
   const { count: nbRappels } = await supabase
-    .from('rappels')
-    .select('*', { count: 'exact', head: true })
-    .eq('vu', false)
+    .from('rappels').select('*', { count: 'exact', head: true }).eq('vu', false)
 
-  const { data: rappelsUrgents } = await supabase
+  // Graphique naissances 30 derniers jours (regroupé par jour)
+  const { data: misesBas30j } = await supabase
+    .from('mises_bas')
+    .select('date_misebas, nes_vivants')
+    .gte('date_misebas', ilYa30Jours.toISOString().split('T')[0])
+    .order('date_misebas', { ascending: true })
+
+  const parJour = new Map<string, number>()
+  for (const m of misesBas30j ?? []) {
+    parJour.set(m.date_misebas, (parJour.get(m.date_misebas) ?? 0) + m.nes_vivants)
+  }
+  const donneesGraphique = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (13 - i))
+    return parJour.get(d.toISOString().split('T')[0]) ?? 0
+  })
+
+  // Saillies / mises bas prévues
+  const { data: saillies } = await supabase
+    .from('accouplements')
+    .select(`date_misebas_prevue, femelle:accouplements_femelle_id_fkey(identifiant), male:accouplements_male_id_fkey(identifiant)`)
+    .in('statut', ['en_cours', 'confirmee'])
+    .order('date_misebas_prevue', { ascending: true })
+    .limit(3)
+
+  // Alertes / rappels
+  const { data: rappels } = await supabase
     .from('rappels')
     .select(`*, lapin:lapin_id(identifiant, sexe)`)
     .eq('vu', false)
     .order('date_prevue', { ascending: true })
-    .limit(4)
+    .limit(3)
 
-  const { data: transactionsMois } = await supabase
-    .from('transactions_financieres')
-    .select('type, montant')
-    .gte('date_transaction', debutMois)
-
-  const revenusMois = (transactionsMois ?? []).filter((t) => t.type === 'revenu').reduce((s, t) => s + Number(t.montant), 0)
-  const depensesMois = (transactionsMois ?? []).filter((t) => t.type === 'depense').reduce((s, t) => s + Number(t.montant), 0)
-  const beneficeDuMois = revenusMois - depensesMois
-  const totalMouvement = revenusMois + depensesMois
-  const ratioRevenus = totalMouvement > 0 ? Math.round((revenusMois / totalMouvement) * 100) : 50
+  function joursRestants(date: string) {
+    const diff = Math.ceil((new Date(date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    if (diff <= 0) return "Aujourd'hui"
+    if (diff === 1) return 'Demain'
+    return `Dans ${diff} jours`
+  }
 
   return (
-    <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
-      {/* En-tête léger */}
-      <div className="mb-2 md:mb-6" />
+    <div className="max-w-6xl mx-auto px-5 md:px-8 py-6">
+      <h1 className="text-2xl font-bold text-ink mb-1">Bonjour {profil?.nom || 'Éleveur'} 👋</h1>
+      <p className="text-sm text-ink-soft mb-6">Voici ce qui se passe dans {profil?.nom_elevage || 'votre élevage'} aujourd'hui.</p>
 
-      <h1 className="text-2xl font-display font-semibold leading-tight mb-1">
-        Bonjour, {profilComplet?.nom || 'Éleveur'} 👋
-      </h1>
-      <p className="text-sm text-ink-soft mb-6">
-        Voici un aperçu de {profilComplet?.nom_elevage || 'ton élevage'}.
-      </p>
-
-      {/* Cartes stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-        <div className="bg-accent text-paper rounded-card p-5 flex items-center gap-4 col-span-2 md:col-span-1">
-          <Rabbit size={52} strokeWidth={1.3} className="shrink-0 -ml-1" />
-          <div>
-            <p className="text-sm text-paper/85">Total lapins</p>
-            <p className="text-3xl font-display font-semibold leading-tight">{nbLapinsTotal ?? 0}</p>
-            {(nbNouveauxCeMois ?? 0) > 0 && (
-              <p className="text-xs text-paper/70 mt-0.5">+{nbNouveauxCeMois} ce mois</p>
-            )}
-          </div>
-        </div>
-
-        <Card>
-          <Baby size={26} strokeWidth={1.6} className="text-ink mb-3" />
-          <p className="text-sm text-ink-soft">Jeunes lapins</p>
-          <p className="text-2xl font-display font-semibold mt-1">{nbJeunes}</p>
-        </Card>
-
-        <Card>
-          <Venus size={26} strokeWidth={1.6} className="text-ink mb-3" />
-          <p className="text-sm text-ink-soft">Femelles reprod.</p>
-          <p className="text-2xl font-display font-semibold mt-1">{nbFemellesReproductrices}</p>
-        </Card>
-
-        <Card>
-          <Mars size={26} strokeWidth={1.6} className="text-ink mb-3" />
-          <p className="text-sm text-ink-soft">Mâles reprod.</p>
-          <p className="text-2xl font-display font-semibold mt-1">{nbMalesReproducteurs}</p>
-        </Card>
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <StatCardIcone
+          icon={Rabbit}
+          label="Lapins au total"
+          value={nbLapinsTotal ?? 0}
+          delta={(nbNouveauxCeMois ?? 0) > 0 ? `${nbNouveauxCeMois} ce mois` : undefined}
+        />
+        <StatCardIcone icon={Baby} label="Naissances" value={naissancesMois} delta={naissancesMois > 0 ? 'ce mois' : undefined} />
+        <StatCardIcone icon={Stethoscope} label="Traitements aujourd'hui" value={soinsAujourdhui ?? 0} />
+        <StatCardIcone icon={Bell} label="Rappels à venir" value={nbRappels ?? 0} />
       </div>
 
-      {(nbGestantes ?? 0) > 0 && (
-        <Card className="mb-3 flex items-center justify-between bg-accent-soft border-accent/20">
-          <div className="flex items-center gap-2">
-            <HeartPulse size={17} className="text-accent" />
-            <span className="text-sm text-ink">Gestations en cours</span>
-          </div>
-          <span className="text-lg font-display font-semibold text-accent">{nbGestantes}</span>
-        </Card>
-      )}
-
-      <div className="md:grid md:grid-cols-3 md:gap-6">
-        <div className="md:col-span-2">
-          {rappelsUrgents && rappelsUrgents.length > 0 && (
-            <Card className="!p-0 overflow-hidden mb-3">
-              <p className="text-sm font-medium px-5 pt-4 pb-2">Activités récentes</p>
-              <div className="divide-y divide-line/60">
-                {rappelsUrgents.map((r: any) => (
-                  <div key={r.id} className="flex items-center gap-3 px-5 py-3">
-                    <Bell size={16} className="text-ink-soft shrink-0" strokeWidth={1.6} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm truncate">{LABEL_TYPE_RAPPEL[r.type] || r.message}</p>
-                      {r.lapin && (
-                        <div className="mt-0.5">
-                          <EarTagBadge identifiant={r.lapin.identifiant} sexe={r.lapin.sexe} />
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-xs text-accent shrink-0">
-                      {new Date(r.date_prevue).toLocaleDateString('fr-FR')}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          <Link href="/finances" className="tap block mb-3">
-            <Card>
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-sm font-medium">Finances</p>
-                <span className="w-11 h-11 rounded-card bg-accent-soft text-accent flex items-center justify-center">
-                  {beneficeDuMois >= 0 ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
-                </span>
-              </div>
-              <p className="text-xs text-ink-soft">Solde actuel</p>
-              <p className={`text-2xl font-display font-semibold mb-3 ${beneficeDuMois >= 0 ? 'text-accent' : 'text-danger'}`}>
-                {formatFCFA(beneficeDuMois)}
-              </p>
-              <div className="h-2 rounded-pill bg-accent-soft overflow-hidden">
-                <div className="h-full bg-accent rounded-pill" style={{ width: `${ratioRevenus}%` }} />
-              </div>
-            </Card>
-          </Link>
+      <div className="grid lg:grid-cols-3 gap-4">
+        {/* Graphique naissances */}
+        <div className="lg:col-span-1">
+          <TrendCard label="Naissances (14 derniers jours)" value={naissancesMois} delta="ce mois" donnees={donneesGraphique} />
         </div>
 
-        <div className="md:hidden">
-          <p className="text-xs text-ink-soft mb-1">Élevage</p>
-          <div className="grid grid-cols-3 gap-1 mb-4">
-            <QuickAction href="/lapins" icon={Rabbit} label="Lapins" />
-            <QuickAction href="/reproduction" icon={HeartPulse} label="Reprod." accent />
-            <QuickAction href="/mises-bas" icon={Baby} label="Naissances" />
-            <QuickAction href="/sante" icon={Stethoscope} label="Santé" />
-            <QuickAction href="/alimentation" icon={Wheat} label="Aliment." />
-            <QuickAction href="/calendrier" icon={CalendarDays} label="Calendrier" />
+        {/* Saillies prévues */}
+        <Card className="lg:col-span-1">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-semibold text-ink">Saillies prévues</h3>
+            <Link href="/reproduction" className="text-xs text-accent-green font-medium">Voir tout</Link>
           </div>
-
-          <p className="text-xs text-ink-soft mb-1">Gestion</p>
-          <div className="grid grid-cols-3 gap-1 mb-4">
-            <QuickAction href="/statistiques" icon={BarChart3} label="Stats" />
-            <QuickAction href="/store" icon={BookOpen} label="Ressources" />
-            <QuickAction href="/parametres" icon={Settings} label="Réglages" />
+          <div className="flex flex-col gap-3">
+            {saillies?.map((s: any, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <EarTagBadge identifiant={s.femelle.identifiant} sexe="F" />
+                  <span className="text-xs text-ink-soft">×</span>
+                  <EarTagBadge identifiant={s.male.identifiant} sexe="M" />
+                </div>
+                <span className="text-xs text-accent font-medium bg-accent-soft px-2 py-1 rounded-pill">
+                  {joursRestants(s.date_misebas_prevue)}
+                </span>
+              </div>
+            ))}
+            {(!saillies || saillies.length === 0) && (
+              <p className="text-xs text-ink-soft">Aucune saillie prévue.</p>
+            )}
           </div>
+        </Card>
 
-          {profilComplet?.role === 'admin' && (
-            <Link
-              href="/admin"
-              className="tap block text-center border border-accent text-accent rounded-card py-2.5 text-sm font-medium"
-            >
-              Interface admin
-            </Link>
-          )}
+        {/* Alertes */}
+        <div className="lg:col-span-1">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-semibold text-ink">Alertes</h3>
+            <Link href="/rappels" className="text-xs text-accent-green font-medium">Voir tout</Link>
+          </div>
+          <div className="flex flex-col gap-2">
+            {rappels?.map((r: any) => (
+              <AlertCard
+                key={r.id}
+                icon={Bell}
+                titre={LABEL_TYPE_RAPPEL[r.type] || r.message}
+                sousTitre={r.lapin ? `${r.lapin.identifiant} — ${new Date(r.date_prevue).toLocaleDateString('fr-FR')}` : new Date(r.date_prevue).toLocaleDateString('fr-FR')}
+              />
+            ))}
+            {(!rappels || rappels.length === 0) && (
+              <p className="text-xs text-ink-soft">Aucune alerte pour le moment.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

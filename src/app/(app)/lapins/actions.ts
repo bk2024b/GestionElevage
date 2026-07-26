@@ -75,3 +75,16 @@ export async function supprimerLapin(id: string) {
   revalidatePath('/lapins')
   redirect('/lapins')
 }
+
+export async function rechercherLapins(terme: string) {
+  const supabase = await createClient()
+  if (!terme.trim()) return []
+
+  const { data } = await supabase
+    .from('lapins')
+    .select('id, identifiant, nom, sexe')
+    .or(`identifiant.ilike.%${terme}%,nom.ilike.%${terme}%`)
+    .limit(5)
+
+  return data ?? []
+}
