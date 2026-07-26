@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { classifierLapin } from '@/lib/lapins'
 import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
+import { calculerAutonomieStock } from '@/lib/alimentation-stock'
 import { StatCardIcone, TrendCard, AlertCard, Card } from '@/components/ui/Card'
+import { QuickAction } from '@/components/ui/QuickAction'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import Link from 'next/link'
 import {
@@ -9,7 +11,13 @@ import {
   Baby,
   Stethoscope,
   Bell,
-  ChevronRight,
+  Package,
+  HeartPulse,
+  Wheat,
+  CalendarDays,
+  BarChart3,
+  BookOpen,
+  Settings,
 } from 'lucide-react'
 
 export default async function DashboardPage() {
@@ -34,10 +42,9 @@ export default async function DashboardPage() {
   const { count: soinsAujourdhui } = await supabase
     .from('soins').select('*', { count: 'exact', head: true }).eq('date_soin', aujourdhui)
 
-  const { count: nbRappels } = await supabase
-    .from('rappels').select('*', { count: 'exact', head: true }).eq('vu', false)
+  const { joursRestants } = await calculerAutonomieStock(user!.id)
 
-  // Graphique naissances 30 derniers jours (regroupé par jour)
+  // Graphique naissances 14 derniers jours
   const { data: misesBas30j } = await supabase
     .from('mises_bas')
     .select('date_misebas, nes_vivants')
@@ -70,7 +77,7 @@ export default async function DashboardPage() {
     .order('date_prevue', { ascending: true })
     .limit(3)
 
-  function joursRestants(date: string) {
+  function joursRestantsAffichage(date: string) {
     const diff = Math.ceil((new Date(date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
     if (diff <= 0) return "Aujourd'hui"
     if (diff === 1) return 'Demain'
@@ -92,10 +99,15 @@ export default async function DashboardPage() {
         />
         <StatCardIcone icon={Baby} label="Naissances" value={naissancesMois} delta={naissancesMois > 0 ? 'ce mois' : undefined} />
         <StatCardIcone icon={Stethoscope} label="Traitements aujourd'hui" value={soinsAujourdhui ?? 0} />
-        <StatCardIcone icon={Bell} label="Rappels à venir" value={nbRappels ?? 0} />
+        <StatCardIcone
+          icon={Package}
+          label="Stock nourriture"
+          value={joursRestants !== null ? `${joursRestants} j` : '—'}
+          delta={joursRestants !== null && joursRestants > 7 ? 'Stock suffisant' : undefined}
+        />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4 mb-4">
         {/* Graphique naissances */}
         <div className="lg:col-span-1">
           <TrendCard label="Naissances (14 derniers jours)" value={naissancesMois} delta="ce mois" donnees={donneesGraphique} />
@@ -116,7 +128,7 @@ export default async function DashboardPage() {
                   <EarTagBadge identifiant={s.male.identifiant} sexe="M" />
                 </div>
                 <span className="text-xs text-accent font-medium bg-accent-soft px-2 py-1 rounded-pill">
-                  {joursRestants(s.date_misebas_prevue)}
+                  {joursRestantsAffichage(s.date_misebas_prevue)}
                 </span>
               </div>
             ))}
@@ -145,6 +157,26 @@ export default async function DashboardPage() {
               <p className="text-xs text-ink-soft">Aucune alerte pour le moment.</p>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Accès rapides — mobile uniquement, la sidebar couvre déjà la navigation sur desktop */}
+      <div className="md:hidden mt-2">
+        <p className="text-xs text-ink-soft mb-1">Élevage</p>
+        <div className="grid grid-cols-3 gap-1 mb-4">
+          <QuickAction href="/lapins" icon={Rabbit} label="Lapins" />
+          <QuickAction href="/reproduction" icon={HeartPulse} label="Reprod." accent />
+          <QuickAction href="/mises-bas" icon={Baby} label="Naissances" />
+          <QuickAction href="/sante" icon={Stethoscope} label="Santé" />
+          <QuickAction href="/alimentation" icon={Wheat} label="Aliment." />
+          <QuickAction href="/calendrier" icon={CalendarDays} label="Calendrier" />
+        </div>
+
+        <p className="text-xs text-ink-soft mb-1">Gestion</p>
+        <div className="grid grid-cols-3 gap-1">
+          <QuickAction href="/statistiques" icon={BarChart3} label="Stats" />
+          <QuickAction href="/store" icon={BookOpen} label="Ressources" />
+          <QuickAction href="/parametres" icon={Settings} label="Réglages" />
         </div>
       </div>
     </div>
