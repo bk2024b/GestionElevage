@@ -9,7 +9,7 @@ export function MobileTopBar({ isAdmin, nbRappels }: { isAdmin: boolean; nbRappe
       <Link href="/rappels" className="tap relative w-10 h-10 flex items-center justify-center rounded-full">
         <Bell size={20} className="text-ink" />
         {nbRappels > 0 && (
-          <span className="absolute top-1.5 right-2 w-2.5 h-2.5 rounded-full bg-accent" />
+          <span className="absolute top-1.5 right-2 w-2.5 h-2.5 rounded-full bg-accent-green" />
         )}
       </Link>
     </div>

@@ -15,7 +15,7 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-line/60 safe-bottom z-20">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-line safe-bottom z-20">
       <div className="flex max-w-md mx-auto">
         {ONGLETS.map(({ href, label, icon: Icon }) => {
           const actif = pathname.startsWith(href)
@@ -28,9 +28,9 @@ export function BottomNav() {
               <Icon
                 size={22}
                 strokeWidth={actif ? 2.2 : 1.6}
-                className={actif ? 'text-accent' : 'text-ink-soft/50'}
+                className={actif ? 'text-accent-green' : 'text-ink-soft/50'}
               />
-              <span className={`text-[11px] ${actif ? 'text-accent font-medium' : 'text-ink-soft/50'}`}>
+              <span className={`text-[11px] ${actif ? 'text-accent-green font-medium' : 'text-ink-soft/50'}`}>
                 {label}
               </span>
             </Link>

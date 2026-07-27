@@ -62,9 +62,9 @@ export function MobileMenu({ isAdmin = false }: { isAdmin?: boolean }) {
             className="absolute inset-0 bg-ink/40"
             onClick={() => setOuvert(false)}
           />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-paper safe-top safe-bottom overflow-y-auto animate-in slide-in-from-left duration-200">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-paper safe-top safe-bottom overflow-y-auto">
             <div className="flex items-center justify-between px-5 py-5">
-              <span className="font-display font-semibold text-sm">Menu</span>
+              <span className="font-semibold text-sm">Menu</span>
               <button onClick={() => setOuvert(false)} className="tap text-ink-soft">
                 <X size={20} />
               </button>
@@ -84,8 +84,8 @@ export function MobileMenu({ isAdmin = false }: { isAdmin?: boolean }) {
                           key={href}
                           href={href}
                           onClick={() => setOuvert(false)}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-card text-sm ${
-                            actif ? 'bg-accent-soft text-accent font-medium' : 'text-ink'
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-control text-sm ${
+                            actif ? 'bg-accent-green-soft text-accent-green font-medium' : 'text-ink'
                           }`}
                         >
                           <Icon size={17} strokeWidth={actif ? 2.4 : 1.8} />
@@ -102,7 +102,7 @@ export function MobileMenu({ isAdmin = false }: { isAdmin?: boolean }) {
                   <Link
                     href="/admin"
                     onClick={() => setOuvert(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-card text-sm ${
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-control text-sm ${
                       pathname.startsWith('/admin') ? 'bg-accent-soft text-accent font-medium' : 'text-accent'
                     }`}
                   >
