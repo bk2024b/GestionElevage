@@ -23,7 +23,7 @@ export default async function RappelsPage() {
 
   return (
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
-      <h1 className="text-xl md:text-2xl font-display font-semibold mb-5">Rappels</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-5">Rappels</h1>
 
       <div className="md:grid md:grid-cols-2 md:gap-3 flex flex-col gap-2 md:flex-none mb-6">
         {rappels?.map((r: any) => {

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 import { FileText, GraduationCap, ExternalLink, Download } from 'lucide-react'
 
 export default async function StorePage() {
@@ -17,7 +18,7 @@ export default async function StorePage() {
 
   return (
     <div className="max-w-md md:max-w-5xl mx-auto px-5 py-6">
-      <h1 className="text-xl md:text-2xl font-display font-semibold mb-1">Ressources</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-1">Ressources</h1>
       <p className="text-sm text-ink-soft mb-6">Guides, documents et formations pour ton élevage.</p>
 
       {documents.length > 0 && (
@@ -63,8 +64,8 @@ function RessourceCard({ ressource }: { ressource: any }) {
       )}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start gap-2 mb-2">
-          <span className="w-9 h-9 shrink-0 flex items-center justify-center rounded-full bg-accent-soft">
-            <Icon size={16} className="text-accent" />
+          <span className="w-9 h-9 shrink-0 flex items-center justify-center rounded-control bg-accent-green-soft">
+            <Icon size={16} className="text-accent-green" />
           </span>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium leading-tight">{ressource.titre}</p>
@@ -72,7 +73,7 @@ function RessourceCard({ ressource }: { ressource: any }) {
               <p className="text-xs text-ink-soft mt-0.5">{ressource.categorie}</p>
             )}
           </div>
-          <Badge ton={ressource.gratuit ? 'success' : undefined}>
+          <Badge ton={ressource.gratuit ? 'success' : 'attention'}>
             {ressource.gratuit ? 'Gratuit' : 'Payant'}
           </Badge>
         </div>
@@ -84,23 +85,20 @@ function RessourceCard({ ressource }: { ressource: any }) {
         <div className="flex-1" />
 
         {lien ? (
-          <a
-            href={lien}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tap flex items-center justify-center gap-1.5 text-xs font-medium bg-ink text-paper rounded-card py-2.5"
-          >
-            {ressource.gratuit ? (
-              <>
-                <Download size={14} />
-                Consulter
-              </>
-            ) : (
-              <>
-                <ExternalLink size={14} />
-                Voir sur Chariow
-              </>
-            )}
+          <a href={lien} target="_blank" rel="noopener noreferrer" className="block">
+            <Button variante="primaire" className="w-full text-xs py-2.5 flex items-center justify-center gap-1.5">
+              {ressource.gratuit ? (
+                <>
+                  <Download size={14} />
+                  Consulter
+                </>
+              ) : (
+                <>
+                  <ExternalLink size={14} />
+                  Voir sur Chariow
+                </>
+              )}
+            </Button>
           </a>
         ) : (
           <p className="text-xs text-ink-soft/60 text-center py-2">Lien indisponible</p>

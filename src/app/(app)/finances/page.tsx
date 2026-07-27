@@ -3,7 +3,8 @@ import { supprimerTransaction } from './actions'
 import { CATEGORIES_DEPENSE, CATEGORIES_REVENU, formatFCFA } from '@/lib/finances'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { TrendingUp, TrendingDown, Scale } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { TrendingUp, TrendingDown, Scale, Plus } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function FinancesPage() {
@@ -21,38 +22,44 @@ export default async function FinancesPage() {
   return (
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-xl md:text-2xl font-display font-semibold">Finances</h1>
+        <h1 className="text-xl md:text-2xl font-bold">Finances</h1>
         <div className="flex gap-2">
-          <Link href="/finances/nouveau?type=revenu" className="tap text-xs bg-success/10 text-success px-3 py-2.5 rounded-card font-medium">
-            + Revenu
+          <Link href="/finances/nouveau?type=revenu">
+            <Button variante="secondaire" className="!border-accent-green !text-accent-green text-xs flex items-center gap-1">
+              <Plus size={14} />
+              Revenu
+            </Button>
           </Link>
-          <Link href="/finances/nouveau?type=depense" className="tap text-xs bg-danger/10 text-danger px-3 py-2.5 rounded-card font-medium">
-            + Dépense
+          <Link href="/finances/nouveau?type=depense">
+            <Button variante="secondaire" className="!border-danger !text-danger text-xs flex items-center gap-1">
+              <Plus size={14} />
+              Dépense
+            </Button>
           </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3 mb-6">
         <Card className="!p-4">
-          <span className="w-9 h-9 rounded-full bg-success/10 text-success flex items-center justify-center mb-2">
+          <span className="w-9 h-9 rounded-control bg-accent-green-soft text-accent-green flex items-center justify-center mb-2">
             <TrendingUp size={16} />
           </span>
           <p className="text-xs text-ink-soft">Revenus</p>
-          <p className="text-sm md:text-lg font-display font-semibold text-success">{formatFCFA(revenus)}</p>
+          <p className="text-sm md:text-lg font-bold text-accent-green">{formatFCFA(revenus)}</p>
         </Card>
         <Card className="!p-4">
-          <span className="w-9 h-9 rounded-full bg-danger/10 text-danger flex items-center justify-center mb-2">
+          <span className="w-9 h-9 rounded-control bg-danger/10 text-danger flex items-center justify-center mb-2">
             <TrendingDown size={16} />
           </span>
           <p className="text-xs text-ink-soft">Dépenses</p>
-          <p className="text-sm md:text-lg font-display font-semibold text-danger">{formatFCFA(depenses)}</p>
+          <p className="text-sm md:text-lg font-bold text-danger">{formatFCFA(depenses)}</p>
         </Card>
         <Card className="!p-4">
-          <span className="w-9 h-9 rounded-full bg-accent-soft text-accent flex items-center justify-center mb-2">
+          <span className="w-9 h-9 rounded-control bg-accent-soft text-accent flex items-center justify-center mb-2">
             <Scale size={16} />
           </span>
           <p className="text-xs text-ink-soft">Bénéfice</p>
-          <p className={`text-sm md:text-lg font-display font-semibold ${benefice >= 0 ? 'text-accent' : 'text-danger'}`}>{formatFCFA(benefice)}</p>
+          <p className={`text-sm md:text-lg font-bold ${benefice >= 0 ? 'text-accent-green' : 'text-danger'}`}>{formatFCFA(benefice)}</p>
         </Card>
       </div>
 
@@ -74,7 +81,7 @@ export default async function FinancesPage() {
                   {t.description ? ` — ${t.description}` : ''}
                 </p>
               </div>
-              <span className={`text-sm font-medium ${t.type === 'revenu' ? 'text-success' : 'text-danger'}`}>
+              <span className={`text-sm font-medium ${t.type === 'revenu' ? 'text-accent-green' : 'text-danger'}`}>
                 {t.type === 'revenu' ? '+' : '-'}{formatFCFA(Number(t.montant))}
               </span>
               {!estAutomatique && (

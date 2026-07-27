@@ -17,21 +17,21 @@ export default async function ParametresPage({
 
   return (
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
-      <h1 className="text-xl md:text-2xl font-display font-semibold mb-5">Paramètres</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-5">Paramètres</h1>
 
       {error && (
-        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-4">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-control px-3 py-2 mb-4">{error}</p>
       )}
       {success === '1' && (
-        <p className="text-sm text-success bg-success/10 rounded-card px-3 py-2 mb-4">Profil mis à jour.</p>
+        <p className="text-sm text-accent-green bg-accent-green-soft rounded-control px-3 py-2 mb-4">Profil mis à jour.</p>
       )}
       {success === 'mdp' && (
-        <p className="text-sm text-success bg-success/10 rounded-card px-3 py-2 mb-4">Mot de passe modifié.</p>
+        <p className="text-sm text-accent-green bg-accent-green-soft rounded-control px-3 py-2 mb-4">Mot de passe modifié.</p>
       )}
 
       <div className="md:grid md:grid-cols-2 md:gap-6">
         <Card className="mb-6 md:mb-0">
-          <h2 className="text-sm font-medium text-ink-soft mb-4">Profil de l'élevage</h2>
+          <h2 className="text-sm font-semibold text-ink-soft mb-4">Profil de l'élevage</h2>
           <form action={modifierProfil} className="flex flex-col gap-3">
             <Field label="Ton nom">
               <Input name="nom" type="text" defaultValue={profil?.nom ?? ''} required />
@@ -53,7 +53,7 @@ export default async function ParametresPage({
 
         <div className="flex flex-col gap-6">
           <Card>
-            <h2 className="text-sm font-medium text-ink-soft mb-4">Sécurité</h2>
+            <h2 className="text-sm font-semibold text-ink-soft mb-4">Sécurité</h2>
             <form action={changerMotDePasse} className="flex flex-col gap-3">
               <Field label="Nouveau mot de passe">
                 <Input
@@ -70,7 +70,7 @@ export default async function ParametresPage({
           </Card>
 
           <Card>
-            <h2 className="text-sm font-medium text-ink-soft mb-4">Compte</h2>
+            <h2 className="text-sm font-semibold text-ink-soft mb-4">Compte</h2>
             <p className="text-sm text-ink-soft mb-3">{user?.email}</p>
             <form action={signOut}>
               <Button type="submit" variante="danger" className="w-full">

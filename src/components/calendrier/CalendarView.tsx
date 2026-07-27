@@ -12,7 +12,7 @@ const COULEUR_POINT: Record<string, string> = {
   accouplement: 'bg-ink',
   nid: 'bg-accent',
   misebas: 'bg-danger',
-  sevrage: 'bg-success',
+  sevrage: 'bg-accent-green',
   soin: 'bg-ink-soft',
 }
 
@@ -65,7 +65,7 @@ export function CalendarView({ evenements }: { evenements: EvenementCalendrier[]
             </Card>
           ))}
           {(evenementsParJour.get(jourSelectionne) ?? []).length === 0 && (
-            <p className="text-xs text-ink-soft/70">Aucun événement ce jour.</p>
+            <p className="text-xs text-ink-soft">Aucun événement ce jour.</p>
           )}
         </div>
       )}
@@ -76,11 +76,11 @@ export function CalendarView({ evenements }: { evenements: EvenementCalendrier[]
     <div className="md:grid md:grid-cols-[1fr_320px] md:gap-6 md:items-start">
       <div>
         <div className="flex items-center justify-between mb-4">
-          <button onClick={() => changerMois(-1)} className="tap p-2 border border-line rounded-card">
+          <button onClick={() => changerMois(-1)} className="tap p-2 border border-line rounded-control">
             <ChevronLeft size={16} />
           </button>
-          <p className="text-sm font-medium font-display">{MOIS[mois]} {annee}</p>
-          <button onClick={() => changerMois(1)} className="tap p-2 border border-line rounded-card">
+          <p className="text-sm font-semibold">{MOIS[mois]} {annee}</p>
+          <button onClick={() => changerMois(1)} className="tap p-2 border border-line rounded-control">
             <ChevronRight size={16} />
           </button>
         </div>
@@ -102,8 +102,8 @@ export function CalendarView({ evenements }: { evenements: EvenementCalendrier[]
               <button
                 key={date}
                 onClick={() => setJourSelectionne(estSelectionne ? null : date)}
-                className={`tap flex flex-col items-center py-2 md:py-3 rounded-card text-xs ${
-                  estSelectionne ? 'bg-ink text-paper' : estAujourdhui ? 'bg-accent-soft' : ''
+                className={`tap flex flex-col items-center py-2 md:py-3 rounded-control text-xs ${
+                  estSelectionne ? 'bg-ink text-white' : estAujourdhui ? 'bg-accent-green-soft' : ''
                 }`}
               >
                 <span>{Number(date.split('-')[2])}</span>
@@ -129,14 +129,12 @@ export function CalendarView({ evenements }: { evenements: EvenementCalendrier[]
         </div>
       </div>
 
-      {/* Mobile : détail sous le calendrier, seulement si un jour est sélectionné */}
       {jourSelectionne && (
         <div className="md:hidden mt-4">
           {detailJour}
         </div>
       )}
 
-      {/* Desktop : panneau de détail toujours visible à côté */}
       <div className="hidden md:block sticky top-6">
         {detailJour}
       </div>

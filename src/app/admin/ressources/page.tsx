@@ -24,16 +24,18 @@ export default async function AdminRessourcesPage({
       <div className="flex justify-between items-center mb-5">
         <div className="flex items-center gap-3">
           <Link href="/admin" className="text-sm text-ink-soft">← Admin</Link>
-          <h1 className="text-xl md:text-2xl font-display font-semibold">Ressources</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Ressources</h1>
         </div>
-        <Link href="/admin/ressources/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-4 py-2.5 rounded-card">
-          <Plus size={16} />
-          Ajouter
+        <Link href="/admin/ressources/nouveau">
+          <Button variante="primaire" className="flex items-center gap-1 text-sm">
+            <Plus size={16} />
+            Ajouter
+          </Button>
         </Link>
       </div>
 
       {error && (
-        <p className="text-sm text-danger bg-danger/10 rounded-card px-3 py-2 mb-3">{error}</p>
+        <p className="text-sm text-danger bg-danger/10 rounded-control px-3 py-2 mb-3">{error}</p>
       )}
 
       <div className="md:grid md:grid-cols-2 md:gap-3 flex flex-col gap-2 md:flex-none">
@@ -46,7 +48,7 @@ export default async function AdminRessourcesPage({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <p className="text-sm font-medium truncate">{r.titre}</p>
-                  <Badge ton={r.gratuit ? 'success' : undefined}>{r.gratuit ? 'Gratuit' : 'Payant'}</Badge>
+                  <Badge ton={r.gratuit ? 'success' : 'attention'}>{r.gratuit ? 'Gratuit' : 'Payant'}</Badge>
                   {!r.publie && <Badge ton="neutre">Brouillon</Badge>}
                 </div>
                 <p className="text-xs text-ink-soft">{r.type === 'cours' ? 'Formation' : 'Document'} {r.categorie ? `· ${r.categorie}` : ''}</p>

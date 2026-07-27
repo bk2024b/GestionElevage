@@ -71,10 +71,10 @@ export function ExportButtons({ stats, nomElevage }: { stats: StatsData; nomElev
 
   return (
     <div className="flex gap-2">
-      <button onClick={exporterPDF} className="tap flex-1 text-sm border border-ink text-ink rounded-card py-2.5">
+      <button onClick={exporterPDF} className="tap flex-1 text-sm border border-line text-ink rounded-control py-2.5">
         Export PDF
       </button>
-      <button onClick={exporterExcel} className="tap flex-1 text-sm border border-ink text-ink rounded-card py-2.5">
+      <button onClick={exporterExcel} className="tap flex-1 text-sm border border-line text-ink rounded-control py-2.5">
         Export Excel
       </button>
     </div>

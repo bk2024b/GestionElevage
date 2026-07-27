@@ -5,12 +5,13 @@ import { LABEL_TYPE_SOIN } from '@/lib/sante'
 import { formatFCFA } from '@/lib/finances'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 import { Plus, X } from 'lucide-react'
 import Link from 'next/link'
 
-const TON_TYPE_SOIN: Record<string, 'danger' | 'neutre' | 'success'> = {
+const TON_TYPE_SOIN: Record<string, 'danger' | 'attention' | 'neutre' | 'success'> = {
   maladie: 'danger',
-  traitement: 'neutre',
+  traitement: 'attention',
   vaccin: 'neutre',
   controle_veto: 'success',
 }
@@ -27,14 +28,16 @@ export default async function SantePage() {
     <div className="max-w-md md:max-w-5xl mx-auto px-5 py-6">
       <div className="flex justify-between items-center mb-5">
         <div>
-          <h1 className="text-xl md:text-2xl font-display font-semibold">Santé & soins</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Santé & soins</h1>
           <p className="text-xs text-ink-soft mt-0.5 hidden md:block">
             {soins?.length ?? 0} soin{(soins?.length ?? 0) > 1 ? 's' : ''} enregistré{(soins?.length ?? 0) > 1 ? 's' : ''}
           </p>
         </div>
-        <Link href="/sante/nouveau" className="tap flex items-center gap-1 text-sm bg-ink text-paper px-4 py-2.5 rounded-card">
-          <Plus size={16} />
-          Soin
+        <Link href="/sante/nouveau">
+          <Button variante="primaire" className="flex items-center gap-1">
+            <Plus size={16} />
+            Soin
+          </Button>
         </Link>
       </div>
 
