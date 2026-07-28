@@ -91,7 +91,15 @@ export async function enregistrerSevrage(miseBasId: string, formData: FormData) 
     redirect(`/mises-bas?error=${encodeURIComponent(error.message)}`)
   }
 
+  // Transition : les lapereaux identifiés de cette mise bas passent en engraissement
+  await supabase
+    .from('lapins')
+    .update({ stade: 'engraissement' })
+    .eq('mise_bas_id', miseBasId)
+    .eq('stade', 'jeune')
+
   revalidatePath('/mises-bas')
+  revalidatePath('/lapins')
   revalidatePath('/dashboard')
   redirect('/mises-bas')
 }
@@ -130,11 +138,11 @@ export async function identifierLapereaux(miseBasId: string, formData: FormData)
   const nouveauxLapins: { identifiant: string; sexe: 'M' | 'F' }[] = []
 
   for (let i = 0; i < nbMales; i++) {
-    const identifiant = await genererIdentifiant(user.id, 'M')
+    const identifiant = await genererIdentifiant(user.id, 'M', i)
     nouveauxLapins.push({ identifiant, sexe: 'M' })
   }
   for (let i = 0; i < nbFemelles; i++) {
-    const identifiant = await genererIdentifiant(user.id, 'F')
+    const identifiant = await genererIdentifiant(user.id, 'F', i)
     nouveauxLapins.push({ identifiant, sexe: 'F' })
   }
 
@@ -148,6 +156,8 @@ export async function identifierLapereaux(miseBasId: string, formData: FormData)
         pere_id: pereId,
         date_naissance: dateNaissance,
         statut: 'actif',
+        stade: 'jeune',
+        mise_bas_id: miseBasId,
       }))
     )
 

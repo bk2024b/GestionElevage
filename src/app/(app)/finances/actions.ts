@@ -9,21 +9,35 @@ export async function creerTransaction(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const categorie = formData.get('categorie') as string
+  const lapinId = (formData.get('lapin_id') as string) || null
+  const dateTransaction = formData.get('date_transaction') as string
+
   const { error } = await supabase.from('transactions_financieres').insert({
     user_id: user.id,
-    lapin_id: (formData.get('lapin_id') as string) || null,
+    lapin_id: categorie === 'vente_lapin' ? lapinId : null,
     type: formData.get('type'),
-    categorie: formData.get('categorie'),
+    categorie,
     montant: Number(formData.get('montant')),
     description: formData.get('description') || null,
-    date_transaction: formData.get('date_transaction'),
+    date_transaction: dateTransaction,
   })
 
   if (error) {
     redirect(`/finances/nouveau?error=${encodeURIComponent(error.message)}`)
   }
 
+  // Si c'est une vente de lapin, on marque le lapin vendu — il sort
+  // automatiquement du décompte "en engraissement"
+  if (categorie === 'vente_lapin' && lapinId) {
+    await supabase
+      .from('lapins')
+      .update({ statut: 'vendu', date_statut: dateTransaction })
+      .eq('id', lapinId)
+  }
+
   revalidatePath('/finances')
+  revalidatePath('/lapins')
   revalidatePath('/dashboard')
   redirect('/finances')
 }
@@ -37,6 +51,5 @@ export async function supprimerTransaction(id: string) {
   }
 
   revalidatePath('/finances')
-  revalidatePath('/dashboard')
   redirect('/finances')
 }

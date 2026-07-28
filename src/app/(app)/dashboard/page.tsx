@@ -43,7 +43,11 @@ export default async function DashboardPage() {
     .from('soins').select('*', { count: 'exact', head: true }).eq('date_soin', aujourdhui)
 
   const { joursRestants } = await calculerAutonomieStock(user!.id)
-
+  const { count: nbEnEngraissement } = await supabase
+  .from('lapins')
+  .select('*', { count: 'exact', head: true })
+  .eq('stade', 'engraissement')
+  .eq('statut', 'actif')
   // Graphique naissances 14 derniers jours
   const { data: misesBas30j } = await supabase
     .from('mises_bas')

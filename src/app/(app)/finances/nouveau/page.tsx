@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/supabase/server'
 import { creerTransaction } from '../actions'
 import { CATEGORIES_DEPENSE, CATEGORIES_REVENU } from '@/lib/finances'
 import { Input, Textarea, Select, Field } from '@/components/ui/Input'
@@ -11,6 +12,14 @@ export default async function NouvelleTransactionPage({
 }) {
   const { error, type } = await searchParams
   const typeDefaut = type === 'revenu' ? 'revenu' : 'depense'
+  const supabase = await createClient()
+
+  const { data: lapinsEnEngraissement } = await supabase
+    .from('lapins')
+    .select('id, identifiant, nom')
+    .eq('stade', 'engraissement')
+    .eq('statut', 'actif')
+    .order('identifiant')
 
   return (
     <div className="max-w-md mx-auto px-5 py-6">
@@ -43,6 +52,18 @@ export default async function NouvelleTransactionPage({
               </optgroup>
             </Select>
           </Field>
+
+          <Field label="Lapin vendu (uniquement pour Vente de lapin)">
+            <Select name="lapin_id" defaultValue="">
+              <option value="">— Aucun —</option>
+              {lapinsEnEngraissement?.map((l) => (
+                <option key={l.id} value={l.id}>{l.identifiant} — {l.nom || 'sans nom'}</option>
+              ))}
+            </Select>
+          </Field>
+          {(!lapinsEnEngraissement || lapinsEnEngraissement.length === 0) && (
+            <p className="text-xs text-ink-soft/70 -mt-2">Aucun lapin en engraissement disponible pour l'instant.</p>
+          )}
 
           <Input name="montant" type="number" step="1" placeholder="Montant (FCFA)" required />
 
