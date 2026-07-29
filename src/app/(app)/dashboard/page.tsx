@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { classifierLapin } from '@/lib/lapins'
 import { LABEL_TYPE_RAPPEL } from '@/lib/rappels'
 import { calculerAutonomieStock } from '@/lib/alimentation-stock'
 import { StatCardIcone, TrendCard, AlertCard, Card } from '@/components/ui/Card'
@@ -12,6 +11,7 @@ import {
   Stethoscope,
   Bell,
   Package,
+  Package2,
   HeartPulse,
   Wheat,
   CalendarDays,
@@ -39,15 +39,17 @@ export default async function DashboardPage() {
     .from('mises_bas').select('nes_vivants').gte('date_misebas', debutMois)
   const naissancesMois = (misesBasMois ?? []).reduce((s, m) => s + m.nes_vivants, 0)
 
+  const { count: nbEnEngraissement } = await supabase
+    .from('lapins')
+    .select('*', { count: 'exact', head: true })
+    .eq('stade', 'engraissement')
+    .eq('statut', 'actif')
+
   const { count: soinsAujourdhui } = await supabase
     .from('soins').select('*', { count: 'exact', head: true }).eq('date_soin', aujourdhui)
 
   const { joursRestants } = await calculerAutonomieStock(user!.id)
-  const { count: nbEnEngraissement } = await supabase
-  .from('lapins')
-  .select('*', { count: 'exact', head: true })
-  .eq('stade', 'engraissement')
-  .eq('statut', 'actif')
+
   // Graphique naissances 14 derniers jours
   const { data: misesBas30j } = await supabase
     .from('mises_bas')
@@ -94,7 +96,7 @@ export default async function DashboardPage() {
       <p className="text-sm text-ink-soft mb-6">Voici ce qui se passe dans {profil?.nom_elevage || 'votre élevage'} aujourd'hui.</p>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
         <StatCardIcone
           icon={Rabbit}
           label="Lapins au total"
@@ -102,6 +104,12 @@ export default async function DashboardPage() {
           delta={(nbNouveauxCeMois ?? 0) > 0 ? `${nbNouveauxCeMois} ce mois` : undefined}
         />
         <StatCardIcone icon={Baby} label="Naissances" value={naissancesMois} delta={naissancesMois > 0 ? 'ce mois' : undefined} />
+        <StatCardIcone
+          icon={Package2}
+          label="En engraissement"
+          value={nbEnEngraissement ?? 0}
+          delta={(nbEnEngraissement ?? 0) > 0 ? 'à vendre' : undefined}
+        />
         <StatCardIcone icon={Stethoscope} label="Traitements aujourd'hui" value={soinsAujourdhui ?? 0} />
         <StatCardIcone
           icon={Package}
