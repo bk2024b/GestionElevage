@@ -109,31 +109,33 @@ export async function identifierLapereaux(miseBasId: string, formData: FormData)
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: miseBas, error: errMiseBas } = await supabase
+  // Verrou atomique : on ne peut "réclamer" cette mise bas qu'une seule fois.
+  // Si deux clics arrivent en même temps, un seul obtiendra une ligne en retour.
+  const { data: verrou, error: errVerrou } = await supabase
     .from('mises_bas')
-    .select('*, accouplement:accouplement_id(male_id)')
+    .update({ lapereaux_identifies: true })
     .eq('id', miseBasId)
+    .eq('lapereaux_identifies', false)
+    .select('*, accouplement:accouplement_id(male_id)')
     .single()
 
-  if (errMiseBas || !miseBas) {
-    redirect(`/mises-bas?error=${encodeURIComponent('Mise bas introuvable')}`)
-  }
-
-  if (miseBas!.lapereaux_identifies) {
-    redirect(`/mises-bas?error=${encodeURIComponent('Lapereaux déjà identifiés')}`)
+  if (errVerrou || !verrou) {
+    redirect(`/mises-bas?error=${encodeURIComponent('Lapereaux déjà identifiés (ou identification en cours)')}`)
   }
 
   const nbMales = Number(formData.get('nb_males') || 0)
   const nbFemelles = Number(formData.get('nb_femelles') || 0)
-  const disponibles = miseBas!.nes_vivants + miseBas!.adoptes - miseBas!.retires
+  const disponibles = verrou!.nes_vivants + verrou!.adoptes - verrou!.retires
 
   if (nbMales + nbFemelles !== disponibles) {
+    // On relâche le verrou puisqu'on n'a rien inséré, pour permettre un nouvel essai
+    await supabase.from('mises_bas').update({ lapereaux_identifies: false }).eq('id', miseBasId)
     redirect(`/mises-bas?error=${encodeURIComponent(`Le total (${nbMales + nbFemelles}) doit correspondre aux lapereaux disponibles (${disponibles})`)}`)
   }
 
-  const pereId = (miseBas as any).accouplement?.male_id ?? null
-  const mereId = miseBas!.femelle_id
-  const dateNaissance = miseBas!.date_misebas
+  const pereId = (verrou as any).accouplement?.male_id ?? null
+  const mereId = verrou!.femelle_id
+  const dateNaissance = verrou!.date_misebas
 
   const nouveauxLapins: { identifiant: string; sexe: 'M' | 'F' }[] = []
 
@@ -162,11 +164,11 @@ export async function identifierLapereaux(miseBasId: string, formData: FormData)
     )
 
     if (errInsert) {
+      // Échec : on relâche le verrou pour permettre un nouvel essai propre
+      await supabase.from('mises_bas').update({ lapereaux_identifies: false }).eq('id', miseBasId)
       redirect(`/mises-bas?error=${encodeURIComponent(errInsert.message)}`)
     }
   }
-
-  await supabase.from('mises_bas').update({ lapereaux_identifies: true }).eq('id', miseBasId)
 
   revalidatePath('/mises-bas')
   revalidatePath('/lapins')
