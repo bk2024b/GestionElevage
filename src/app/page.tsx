@@ -5,6 +5,7 @@ import { MarketingHeader } from '@/components/marketing/MarketingHeader'
 import { FeatureCard } from '@/components/marketing/FeatureCard'
 import { AppLogoMark } from '@/components/ui/AppLogoMark'
 import { BrandName } from '@/components/ui/BrandName'
+import { ButtonLink } from '@/components/ui/Button'
 import {
   Rabbit,
   HeartPulse,
@@ -29,24 +30,24 @@ export default async function LandingPage() {
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-5 pt-16 pb-12 text-center">
-        <span className="inline-flex items-center gap-1.5 text-xs text-accent bg-accent-soft px-3 py-1 rounded-pill mb-5">
+        <span className="inline-flex items-center gap-1.5 text-xs text-accent-green bg-accent-green-soft px-3 py-1 rounded-pill mb-5">
           <Sparkles size={12} />
           Fait pour les éleveurs cunicoles
         </span>
-        <h1 className="text-3xl sm:text-4xl font-display font-semibold leading-tight mb-4">
-  <BrandName /> — l'élevage sans oublis
-</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-ink leading-tight mb-4">
+          Toute la gestion de votre élevage de lapins, dans votre poche
+        </h1>
         <p className="text-ink-soft text-base leading-relaxed mb-8 max-w-xl mx-auto">
           Fiches individuelles, reproduction, naissances, santé, finances et statistiques —
           une seule application pour suivre votre cheptel, sans carnet ni tableur.
         </p>
         <div className="flex items-center justify-center gap-3">
-          <Link href="/register" className="tap bg-ink text-paper px-5 py-3 rounded-card text-sm font-medium">
+          <ButtonLink href="/register" variante="primaire" className="px-5 py-3">
             Commencer gratuitement
-          </Link>
-          <Link href="/login" className="tap border border-line text-ink px-5 py-3 rounded-card text-sm font-medium">
+          </ButtonLink>
+          <ButtonLink href="/login" variante="secondaire" className="px-5 py-3">
             Se connecter
-          </Link>
+          </ButtonLink>
         </div>
       </section>
 
@@ -54,15 +55,15 @@ export default async function LandingPage() {
       <section className="max-w-3xl mx-auto px-5 pb-16">
         <div className="grid grid-cols-3 gap-3 text-center">
           <div>
-            <p className="text-xl font-display font-semibold">Automatique</p>
+            <p className="text-xl font-bold text-ink">Automatique</p>
             <p className="text-xs text-ink-soft">Dates de mise bas et sevrage calculées seules</p>
           </div>
           <div>
-            <p className="text-xl font-display font-semibold">Sans papier</p>
+            <p className="text-xl font-bold text-ink">Sans papier</p>
             <p className="text-xs text-ink-soft">Fini le carnet et les tableurs éparpillés</p>
           </div>
           <div>
-            <p className="text-xl font-display font-semibold">Partout</p>
+            <p className="text-xl font-bold text-ink">Partout</p>
             <p className="text-xs text-ink-soft">Sur ton téléphone, même hors connexion</p>
           </div>
         </div>
@@ -71,7 +72,7 @@ export default async function LandingPage() {
       {/* Fonctionnalités */}
       <section id="fonctionnalites" className="max-w-5xl mx-auto px-5 py-16 border-t border-line">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-display font-semibold mb-2">Tout ce qu'il faut, rien de superflu</h2>
+          <h2 className="text-2xl font-bold text-ink mb-2">Tout ce qu'il faut, rien de superflu</h2>
           <p className="text-ink-soft text-sm">Pensé pour le quotidien d'un élevage, pas pour un tableau Excel.</p>
         </div>
 
@@ -111,7 +112,7 @@ export default async function LandingPage() {
 
       {/* Comment ça marche */}
       <section id="comment-ca-marche" className="max-w-3xl mx-auto px-5 py-16 border-t border-line">
-        <h2 className="text-2xl font-display font-semibold text-center mb-10">Comment ça marche</h2>
+        <h2 className="text-2xl font-bold text-ink text-center mb-10">Comment ça marche</h2>
         <div className="flex flex-col gap-6">
           {[
             { icon: UserPlus, title: 'Crée ton compte', text: "Renseigne le nom de ton élevage, c'est prêt en une minute." },
@@ -119,11 +120,11 @@ export default async function LandingPage() {
             { icon: ClipboardList, title: 'Laisse l\'appli suivre', text: 'Accouplements, naissances, soins — l\'appli calcule les dates et te rappelle au bon moment.' },
           ].map((etape, idx) => (
             <div key={idx} className="flex items-start gap-4">
-              <span className="w-10 h-10 shrink-0 rounded-card bg-ink text-paper flex items-center justify-center font-display font-semibold text-sm">
+              <span className="w-10 h-10 shrink-0 rounded-control bg-ink text-white flex items-center justify-center font-semibold text-sm">
                 {idx + 1}
               </span>
               <div>
-                <h3 className="font-display font-semibold text-sm mb-1">{etape.title}</h3>
+                <h3 className="font-semibold text-sm mb-1 text-ink">{etape.title}</h3>
                 <p className="text-sm text-ink-soft leading-relaxed">{etape.text}</p>
               </div>
             </div>
@@ -133,36 +134,29 @@ export default async function LandingPage() {
 
       {/* CTA final */}
       <section className="max-w-3xl mx-auto px-5 py-16 border-t border-line text-center">
-        <h2 className="text-2xl font-display font-semibold mb-3">Prêt à digitaliser ton élevage ?</h2>
-        <p className="text-ink-soft text-sm mb-6">Gratuit pour commencer, aucune carte bancaire requise.</p>
-        <Link href="/register" className="tap inline-block bg-ink text-paper px-6 py-3 rounded-card text-sm font-medium">
+        <h2 className="text-2xl font-bold text-ink mb-3">Prêt à digitaliser ton élevage ?</h2>
+        <p className="text-ink-soft text-sm mb-6">Gratuit pendant 2 mois, aucune carte bancaire requise.</p>
+        <ButtonLink href="/register" variante="primaire" className="inline-block px-6 py-3">
           Créer mon compte
-        </Link>
+        </ButtonLink>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-line py-8">
-  <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-    <div className="flex items-center gap-2">
-      <AppLogoMark size="sm" />
-      <BrandName className="text-xs text-ink-soft" />
-    </div>
-    <div className="flex flex-col items-center sm:items-end gap-1">
-      <div className="flex gap-3 text-xs text-ink-soft">
-        <Link href="/conditions-utilisation" className="hover:text-ink">Conditions</Link>
-        <Link href="/confidentialite" className="hover:text-ink">Confidentialité</Link>
-      </div>
-      <div className="flex flex-col items-center sm:items-end gap-1">
-  <div className="flex gap-3 text-xs text-ink-soft">
-    <Link href="/conditions-utilisation" className="hover:text-ink">Conditions</Link>
-    <Link href="/confidentialite" className="hover:text-ink">Confidentialité</Link>
-  </div>
-  <p className="text-xs text-ink-soft/70">© {new Date().getFullYear()} Ferme F001. Tous droits réservés.</p>
-    </div>
-</div>
-      
-  </div>
-</footer>
+        <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <AppLogoMark size="sm" />
+            <BrandName className="text-xs text-ink-soft" />
+          </div>
+          <div className="flex flex-col items-center sm:items-end gap-1">
+            <div className="flex gap-3 text-xs text-ink-soft">
+              <Link href="/conditions-utilisation" className="hover:text-ink">Conditions</Link>
+              <Link href="/confidentialite" className="hover:text-ink">Confidentialité</Link>
+            </div>
+            <p className="text-xs text-ink-soft/70">© {new Date().getFullYear()} Ferme F001. Tous droits réservés.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
