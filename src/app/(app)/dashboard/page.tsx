@@ -67,6 +67,25 @@ export default async function DashboardPage() {
     return parJour.get(d.toISOString().split('T')[0]) ?? 0
   })
 
+  // Série 7 jours pour le KPI "Lapins au total"
+  const il7Jours = new Date()
+  il7Jours.setDate(il7Jours.getDate() - 7)
+  const { data: lapins7j } = await supabase
+    .from('lapins')
+    .select('created_at')
+    .gte('created_at', il7Jours.toISOString())
+
+  const parJourLapins = new Map<string, number>()
+  for (const l of lapins7j ?? []) {
+    const jour = l.created_at.split('T')[0]
+    parJourLapins.set(jour, (parJourLapins.get(jour) ?? 0) + 1)
+  }
+  const donneesLapins7j = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (6 - i))
+    return parJourLapins.get(d.toISOString().split('T')[0]) ?? 0
+  })
+
   // Saillies / mises bas prévues
   const { data: saillies } = await supabase
     .from('accouplements')
@@ -102,20 +121,31 @@ export default async function DashboardPage() {
           label="Lapins au total"
           value={nbLapinsTotal ?? 0}
           delta={(nbNouveauxCeMois ?? 0) > 0 ? `${nbNouveauxCeMois} ce mois` : undefined}
+          tendance={(nbNouveauxCeMois ?? 0) > 0 ? 'hausse' : 'neutre'}
+          donnees={donneesLapins7j}
         />
-        <StatCardIcone icon={Baby} label="Naissances" value={naissancesMois} delta={naissancesMois > 0 ? 'ce mois' : undefined} />
+        <StatCardIcone
+          icon={Baby}
+          label="Naissances"
+          value={naissancesMois}
+          delta={naissancesMois > 0 ? 'ce mois' : undefined}
+          tendance={naissancesMois > 0 ? 'hausse' : 'neutre'}
+          donnees={donneesGraphique.slice(-7)}
+        />
         <StatCardIcone
           icon={Package2}
           label="En engraissement"
           value={nbEnEngraissement ?? 0}
           delta={(nbEnEngraissement ?? 0) > 0 ? 'à vendre' : undefined}
+          tendance={(nbEnEngraissement ?? 0) > 0 ? 'hausse' : 'neutre'}
         />
         <StatCardIcone icon={Stethoscope} label="Traitements aujourd'hui" value={soinsAujourdhui ?? 0} />
         <StatCardIcone
           icon={Package}
           label="Stock nourriture"
           value={joursRestants !== null ? `${joursRestants} j` : '—'}
-          delta={joursRestants !== null && joursRestants > 7 ? 'Stock suffisant' : undefined}
+          delta={joursRestants !== null ? (joursRestants > 7 ? 'Stock suffisant' : 'Stock bas') : undefined}
+          tendance={joursRestants !== null ? (joursRestants > 7 ? 'hausse' : 'baisse') : 'neutre'}
         />
       </div>
 

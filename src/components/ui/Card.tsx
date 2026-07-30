@@ -25,27 +25,46 @@ export function StatCard({ label, value, sub }: { label: string; value: string |
   )
 }
 
-/** Nouvelle carte standard : icône + chiffre + libellé + delta optionnel */
+/** Nouvelle carte standard : icône + chiffre + libellé + delta coloré + mini-graphique optionnel */
 export function StatCardIcone({
   icon: Icon,
   label,
   value,
   delta,
+  tendance = 'neutre',
+  donnees,
 }: {
   icon: LucideIcon
   label: string
   value: string | number
   delta?: string
+  tendance?: 'hausse' | 'baisse' | 'neutre'
+  donnees?: number[]
 }) {
+  const couleurDelta = tendance === 'hausse' ? 'text-accent-green' : tendance === 'baisse' ? 'text-danger' : 'text-ink-soft'
+  const flecheDelta = tendance === 'hausse' ? '↑' : tendance === 'baisse' ? '↓' : ''
+  const max = donnees && donnees.length > 0 ? Math.max(...donnees, 1) : 1
+
   return (
     <Card className="flex items-center justify-between">
-      <div>
+      <div className="flex-1 min-w-0">
         <p className="text-sm text-ink-soft mb-1">{label}</p>
         <p className="text-[28px] leading-none font-bold text-ink">{value}</p>
-        {delta && <p className="text-xs text-accent-green mt-1.5">↑ {delta}</p>}
+        {delta && <p className={`text-xs mt-1.5 ${couleurDelta}`}>{flecheDelta} {delta}</p>}
+        {donnees && donnees.length > 0 && (
+          <div className="flex items-end gap-0.5 h-5 mt-2">
+            {donnees.map((v, i) => (
+              <div
+                key={i}
+                className={`flex-1 rounded-sm ${tendance === 'baisse' ? 'bg-danger/60' : 'bg-accent-green/60'}`}
+                style={{ height: `${Math.max((v / max) * 100, 12)}%` }}
+              />
+            ))}
+          </div>
+        )}
       </div>
-      <span className="w-11 h-11 rounded-control bg-accent-green-soft flex items-center justify-center shrink-0">
-        <Icon size={20} className="text-accent-green" strokeWidth={2} />
+      <span className="w-12 h-12 rounded-control bg-accent-green-soft flex items-center justify-center shrink-0 ml-3">
+        <Icon size={22} className="text-accent-green" strokeWidth={2} />
       </span>
     </Card>
   )
