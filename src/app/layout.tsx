@@ -6,9 +6,15 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const plexMono = IBM_Plex_Mono({ subsets: ['latin'], variable: '--font-plex-mono', weight: ['500'] })
 
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://fermef001.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Ferme F001',
-  description: "Gestion complète d'élevage cunicole",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Ferme F001 : gestion d'élevage cunicole pour éleveurs au Bénin",
+    template: '%s | Ferme F001',
+  },
+  description: "Ferme F001 est l'application de gestion d'élevage cunicole pour les éleveurs béninois : fiches, reproduction automatisée, rappels, finances et statistiques. Essai gratuit de 2 mois.",
   manifest: '/manifest.json',
   icons: {
     icon: [

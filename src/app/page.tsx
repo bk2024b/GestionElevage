@@ -18,6 +18,31 @@ import {
   Sparkles,
 } from 'lucide-react'
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Ferme F001 : gestion d'élevage cunicole pour éleveurs au Bénin",
+  description: "Ferme F001 est l'application de gestion d'élevage cunicole pour les éleveurs béninois : fiches, reproduction automatisée, rappels, finances et statistiques. Essai gratuit de 2 mois.",
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "Ferme F001 : gestion d'élevage cunicole pour éleveurs au Bénin",
+    description: "L'application qui remplace le cahier : fiches individuelles, reproduction automatisée, rappels intelligents, finances et statistiques pour votre élevage de lapins.",
+    url: '/',
+    siteName: 'Ferme F001',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Ferme F001 — gestion d\'élevage cunicole' }],
+    locale: 'fr_FR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Ferme F001 : gestion d'élevage cunicole pour éleveurs au Bénin",
+    description: "L'application qui remplace le cahier pour gérer votre élevage de lapins au Bénin.",
+    images: ['/og-image.png'],
+  },
+}
+
 export default async function LandingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -131,7 +156,72 @@ export default async function LandingPage() {
           ))}
         </div>
       </section>
+          {/* Pourquoi Ferme F001 */}
+      <section className="max-w-3xl mx-auto px-5 py-16 border-t border-line">
+        <h2 className="text-2xl font-bold text-ink text-center mb-6">Pourquoi une application spécialisée ?</h2>
+        <div className="flex flex-col gap-4 text-ink-soft text-sm leading-relaxed">
+          <p>
+            La plupart des outils de gestion agricole sont pensés pour un usage
+            généraliste : ils gèrent du bétail, des cultures ou des stocks de
+            façon interchangeable, sans jamais entrer dans le détail d'une
+            filière précise. Ferme F001 fait le choix inverse.
+          </p>
+          <p>
+            Chaque calcul de l'application est spécifique à la cuniculture : la
+            durée de gestation (31 jours), le délai avant sevrage (42 jours), le
+            moment de la palpation (15 jours après l'accouplement), ou encore la
+            distinction entre lapereaux nés vivants, morts-nés, adoptés ou
+            retirés d'une portée. Ce sont des détails qu'un outil généraliste ne
+            prend jamais en compte, et qui font toute la différence pour un
+            éleveur au quotidien.
+          </p>
+          <p>
+            L'application a été conçue au Bénin, pour des éleveurs béninois —
+            en français, en francs CFA, avec une attention particulière portée à
+            la connexion internet parfois limitée sur le terrain. Ce n'est pas
+            une application internationale traduite après coup : c'est un outil
+            pensé depuis le départ pour cette réalité précise.
+          </p>
+        </div>
+      </section>
 
+      {/* FAQ */}
+      <section className="max-w-3xl mx-auto px-5 py-16 border-t border-line">
+        <h2 className="text-2xl font-bold text-ink text-center mb-10">Questions fréquentes</h2>
+        <div className="flex flex-col gap-6">
+          {[
+            {
+              q: "Combien coûte Ferme F001 ?",
+              r: "L'application est gratuite pendant 2 mois complets, sans carte bancaire à renseigner. Passé ce délai, l'abonnement est de 2000 FCFA par mois pour continuer à utiliser toutes les fonctionnalités.",
+            },
+            {
+              q: "Dois-je installer une application depuis un store ?",
+              r: "Non. Ferme F001 est une application web progressive (PWA) : elle s'installe directement depuis ton navigateur, en un tap, et fonctionne ensuite comme une application classique sur ton téléphone, sans passer par le Play Store ou l'App Store.",
+            },
+            {
+              q: "Est-ce que ça fonctionne avec une connexion limitée ?",
+              r: "L'application est conçue pour rester légère et accessible même avec une connexion internet modeste, ce qui correspond à la réalité de nombreux éleveurs sur le terrain.",
+            },
+            {
+              q: "Mes données sont-elles en sécurité ?",
+              r: "Chaque éleveur ne peut voir que ses propres données — lapins, finances, historique. Les informations sont hébergées de façon sécurisée et ne sont jamais partagées avec d'autres utilisateurs de l'application.",
+            },
+            {
+              q: "Puis-je utiliser Ferme F001 sur ordinateur en plus du téléphone ?",
+              r: "Oui, l'application s'adapte à la taille de l'écran : elle reste pleinement utilisable sur ordinateur, avec une navigation adaptée au grand écran, en plus de l'expérience mobile.",
+            },
+            {
+              q: "Que se passe-t-il si j'ai déjà des lapins et un historique avant de commencer ?",
+              r: "Tu peux ajouter tes lapins existants directement dans l'application avec leurs informations connues (date de naissance, race, poids...) — l'historique se construit ensuite au fur et à mesure de ton utilisation.",
+            },
+          ].map((item, idx) => (
+            <div key={idx}>
+              <h3 className="font-semibold text-sm text-ink mb-1.5">{item.q}</h3>
+              <p className="text-sm text-ink-soft leading-relaxed">{item.r}</p>
+            </div>
+          ))}
+        </div>
+      </section>
       {/* CTA final */}
       <section className="max-w-3xl mx-auto px-5 py-16 border-t border-line text-center">
         <h2 className="text-2xl font-bold text-ink mb-3">Prêt à digitaliser ton élevage ?</h2>
