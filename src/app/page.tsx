@@ -6,6 +6,8 @@ import { FeatureCard } from '@/components/marketing/FeatureCard'
 import { AppLogoMark } from '@/components/ui/AppLogoMark'
 import { BrandName } from '@/components/ui/BrandName'
 import { ButtonLink } from '@/components/ui/Button'
+import { HeroIllustration } from '@/components/marketing/HeroIllustration'
+import { HutchPattern } from '@/components/marketing/HutchPattern'
 import {
   Rabbit,
   HeartPulse,
@@ -54,25 +56,33 @@ export default async function LandingPage() {
       <MarketingHeader />
 
       {/* Hero */}
-      <section className="max-w-3xl mx-auto px-5 pt-16 pb-12 text-center">
-        <span className="inline-flex items-center gap-1.5 text-xs text-accent-green bg-accent-green-soft px-3 py-1 rounded-pill mb-5">
-          <Sparkles size={12} />
-          Fait pour les éleveurs cunicoles
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-bold text-ink leading-tight mb-4">
-          Toute la gestion de votre élevage de lapins, dans votre poche
-        </h1>
-        <p className="text-ink-soft text-base leading-relaxed mb-8 max-w-xl mx-auto">
-          Fiches individuelles, reproduction, naissances, santé, finances et statistiques —
-          une seule application pour suivre votre cheptel, sans carnet ni tableur.
-        </p>
-        <div className="flex items-center justify-center gap-3">
-          <ButtonLink href="/register" variante="primaire" className="px-5 py-3">
-            Commencer gratuitement
-          </ButtonLink>
-          <ButtonLink href="/login" variante="secondaire" className="px-5 py-3">
-            Se connecter
-          </ButtonLink>
+      <section className="relative overflow-hidden">
+        <HutchPattern className="absolute inset-0 w-full h-full opacity-40" />
+        <div className="relative max-w-5xl mx-auto px-5 pt-16 pb-12">
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="text-center lg:text-left">
+              <span className="inline-flex items-center gap-1.5 text-xs text-accent-green bg-accent-green-soft px-3 py-1 rounded-pill mb-5">
+                <Sparkles size={12} />
+                Fait pour les éleveurs cunicoles
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-bold text-ink leading-tight mb-4">
+                Toute la gestion de votre élevage de lapins, dans votre poche
+              </h1>
+              <p className="text-ink-soft text-base leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                Fiches individuelles, reproduction, naissances, santé, finances et statistiques —
+                une seule application pour suivre votre cheptel, sans carnet ni tableur.
+              </p>
+              <div className="flex items-center justify-center lg:justify-start gap-3">
+                <ButtonLink href="/register" variante="primaire" className="px-5 py-3">
+                  Commencer gratuitement
+                </ButtonLink>
+                <ButtonLink href="/login" variante="secondaire" className="px-5 py-3">
+                  Se connecter
+                </ButtonLink>
+              </div>
+            </div>
+            <HeroIllustration />
+          </div>
         </div>
       </section>
 

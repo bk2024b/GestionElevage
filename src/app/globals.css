@@ -28,6 +28,9 @@
   --radius-card: 12px;
   --radius-control: 8px;
   --radius-pill: 999px;
+
+  --color-clapier: #8B6F47;
+  --color-clapier-soft: #EDE6DA;
 }
 
 @layer base {
