@@ -4,6 +4,7 @@ import { calculerAutonomieStock } from '@/lib/alimentation-stock'
 import { StatCardIcone, TrendCard, AlertCard, Card } from '@/components/ui/Card'
 import { QuickAction } from '@/components/ui/QuickAction'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
+import { GuidedTour } from '@/components/tour/GuidedTour'
 import Link from 'next/link'
 import {
   Rabbit,
@@ -23,14 +24,13 @@ import {
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  const { data: profil } = await supabase.from('profils').select('nom, nom_elevage').eq('id', user!.id).single()
+  const { data: profil } = await supabase.from('profils').select('nom, nom_elevage, tour_complete').eq('id', user!.id).single()
 
   const debutMois = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]
   const aujourdhui = new Date().toISOString().split('T')[0]
   const ilYa30Jours = new Date()
   ilYa30Jours.setDate(ilYa30Jours.getDate() - 30)
 
-  // KPIs
   const { count: nbLapinsTotal } = await supabase.from('lapins').select('*', { count: 'exact', head: true })
   const { count: nbNouveauxCeMois } = await supabase
     .from('lapins').select('*', { count: 'exact', head: true }).gte('created_at', debutMois)
@@ -50,7 +50,6 @@ export default async function DashboardPage() {
 
   const { joursRestants } = await calculerAutonomieStock(user!.id)
 
-  // Graphique naissances 14 derniers jours
   const { data: misesBas30j } = await supabase
     .from('mises_bas')
     .select('date_misebas, nes_vivants')
@@ -67,7 +66,6 @@ export default async function DashboardPage() {
     return parJour.get(d.toISOString().split('T')[0]) ?? 0
   })
 
-  // Série 7 jours pour le KPI "Lapins au total"
   const il7Jours = new Date()
   il7Jours.setDate(il7Jours.getDate() - 7)
   const { data: lapins7j } = await supabase
@@ -86,7 +84,6 @@ export default async function DashboardPage() {
     return parJourLapins.get(d.toISOString().split('T')[0]) ?? 0
   })
 
-  // Saillies / mises bas prévues
   const { data: saillies } = await supabase
     .from('accouplements')
     .select(`date_misebas_prevue, femelle:accouplements_femelle_id_fkey(identifiant), male:accouplements_male_id_fkey(identifiant)`)
@@ -94,7 +91,6 @@ export default async function DashboardPage() {
     .order('date_misebas_prevue', { ascending: true })
     .limit(3)
 
-  // Alertes / rappels
   const { data: rappels } = await supabase
     .from('rappels')
     .select(`*, lapin:lapin_id(identifiant, sexe)`)
@@ -111,19 +107,22 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-5 md:px-8 py-6">
+      <GuidedTour actif={!profil?.tour_complete} />
+
       <h1 className="text-2xl font-bold text-ink mb-1">Bonjour {profil?.nom || 'Éleveur'} 👋</h1>
       <p className="text-sm text-ink-soft mb-6">Voici ce qui se passe dans {profil?.nom_elevage || 'votre élevage'} aujourd'hui.</p>
 
-      {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-        <StatCardIcone
-          icon={Rabbit}
-          label="Lapins au total"
-          value={nbLapinsTotal ?? 0}
-          delta={(nbNouveauxCeMois ?? 0) > 0 ? `${nbNouveauxCeMois} ce mois` : undefined}
-          tendance={(nbNouveauxCeMois ?? 0) > 0 ? 'hausse' : 'neutre'}
-          donnees={donneesLapins7j}
-        />
+        <div data-tour="kpi-total">
+          <StatCardIcone
+            icon={Rabbit}
+            label="Lapins au total"
+            value={nbLapinsTotal ?? 0}
+            delta={(nbNouveauxCeMois ?? 0) > 0 ? `${nbNouveauxCeMois} ce mois` : undefined}
+            tendance={(nbNouveauxCeMois ?? 0) > 0 ? 'hausse' : 'neutre'}
+            donnees={donneesLapins7j}
+          />
+        </div>
         <StatCardIcone
           icon={Baby}
           label="Naissances"
@@ -132,13 +131,15 @@ export default async function DashboardPage() {
           tendance={naissancesMois > 0 ? 'hausse' : 'neutre'}
           donnees={donneesGraphique.slice(-7)}
         />
-        <StatCardIcone
-          icon={Package2}
-          label="En engraissement"
-          value={nbEnEngraissement ?? 0}
-          delta={(nbEnEngraissement ?? 0) > 0 ? 'à vendre' : undefined}
-          tendance={(nbEnEngraissement ?? 0) > 0 ? 'hausse' : 'neutre'}
-        />
+        <div data-tour="kpi-engraissement">
+          <StatCardIcone
+            icon={Package2}
+            label="En engraissement"
+            value={nbEnEngraissement ?? 0}
+            delta={(nbEnEngraissement ?? 0) > 0 ? 'à vendre' : undefined}
+            tendance={(nbEnEngraissement ?? 0) > 0 ? 'hausse' : 'neutre'}
+          />
+        </div>
         <StatCardIcone icon={Stethoscope} label="Traitements aujourd'hui" value={soinsAujourdhui ?? 0} />
         <StatCardIcone
           icon={Package}
@@ -150,12 +151,10 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mb-4">
-        {/* Graphique naissances */}
         <div className="lg:col-span-1">
           <TrendCard label="Naissances (14 derniers jours)" value={naissancesMois} delta="ce mois" donnees={donneesGraphique} />
         </div>
 
-        {/* Saillies prévues */}
         <Card className="lg:col-span-1">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-base font-semibold text-ink">Saillies prévues</h3>
@@ -180,8 +179,7 @@ export default async function DashboardPage() {
           </div>
         </Card>
 
-        {/* Alertes */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1" data-tour="alertes">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-base font-semibold text-ink">Alertes</h3>
             <Link href="/rappels" className="text-xs text-accent-green font-medium">Voir tout</Link>
@@ -202,7 +200,15 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Accès rapides — mobile uniquement, la sidebar couvre déjà la navigation sur desktop */}
+      <div data-tour="finances">
+        <Link href="/finances" className="tap block mb-4">
+          <Card>
+            <p className="text-sm font-medium text-ink mb-1">Finances</p>
+            <p className="text-xs text-ink-soft">Voir le détail des revenus, dépenses et bénéfice du mois →</p>
+          </Card>
+        </Link>
+      </div>
+
       <div className="md:hidden mt-2">
         <p className="text-xs text-ink-soft mb-1">Élevage</p>
         <div className="grid grid-cols-3 gap-1 mb-4">
