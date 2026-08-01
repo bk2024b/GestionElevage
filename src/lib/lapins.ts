@@ -27,3 +27,15 @@ export function classifierLapin(lapin: { date_naissance: string | null; age_prem
 
   return ageMois >= seuilMois ? 'reproducteur' : 'jeune'
 }
+
+export const LABEL_STADE: Record<string, string> = {
+  jeune: 'Jeune',
+  engraissement: 'En engraissement',
+  reproducteur: 'Reproducteur',
+}
+
+export const TON_STADE: Record<string, 'neutre' | 'attention' | 'success'> = {
+  jeune: 'neutre',
+  engraissement: 'attention',
+  reproducteur: 'success',
+}

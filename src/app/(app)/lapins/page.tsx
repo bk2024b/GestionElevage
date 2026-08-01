@@ -3,6 +3,7 @@ import { EarTagBadge } from '@/components/lapins/EarTagBadge'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
+import { LABEL_STADE, TON_STADE } from '@/lib/lapins'
 import Link from 'next/link'
 import { Plus, Rabbit } from 'lucide-react'
 
@@ -54,7 +55,12 @@ export default async function LapinsPage() {
                   <p className="text-xs text-ink-soft">Cage {lapin.numero_cage}</p>
                 )}
               </div>
-              <Badge ton={TON_STATUT[lapin.statut]}>{LABEL_STATUT[lapin.statut]}</Badge>
+              <div className="flex flex-col items-end gap-1">
+                <Badge ton={TON_STATUT[lapin.statut]}>{LABEL_STATUT[lapin.statut]}</Badge>
+                {lapin.stade && lapin.stade !== 'jeune' && (
+                  <Badge ton={TON_STADE[lapin.stade]}>{LABEL_STADE[lapin.stade]}</Badge>
+                )}
+              </div>
             </Card>
           </Link>
         ))}
@@ -73,9 +79,14 @@ export default async function LapinsPage() {
               </div>
               <p className="text-sm font-medium mb-1 truncate">{lapin.nom || 'Sans nom'}</p>
               <EarTagBadge identifiant={lapin.identifiant} sexe={lapin.sexe} />
-              {lapin.numero_cage && (
-                <p className="text-xs text-ink-soft mt-3">Cage {lapin.numero_cage}</p>
-              )}
+              <div className="flex items-center justify-between mt-3">
+                {lapin.numero_cage && (
+                  <p className="text-xs text-ink-soft">Cage {lapin.numero_cage}</p>
+                )}
+                {lapin.stade && lapin.stade !== 'jeune' && (
+                  <Badge ton={TON_STADE[lapin.stade]}>{LABEL_STADE[lapin.stade]}</Badge>
+                )}
+              </div>
             </Card>
           </Link>
         ))}

@@ -1,8 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { EarTagBadge } from '@/components/lapins/EarTagBadge'
-import { modifierLapin, supprimerLapin } from '../actions'
+import { modifierLapin, supprimerLapin, marquerReproducteur } from '../actions'
 import { recupererHistoriqueLapin, COULEUR_EVENEMENT_HISTORIQUE } from '@/lib/historique'
+import { LABEL_STADE, TON_STADE } from '@/lib/lapins'
 import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Select, Field } from '@/components/ui/Input'
 import { notFound } from 'next/navigation'
@@ -31,53 +33,70 @@ export default async function FicheLapinPage({
 
   const modifierAvecId = modifierLapin.bind(null, id)
   const supprimerAvecId = supprimerLapin.bind(null, id)
+  const marquerReproducteurAvecId = marquerReproducteur.bind(null, id)
 
   return (
     <div className="max-w-md md:max-w-4xl mx-auto px-5 py-6">
-      <div className="flex items-center gap-3 mb-5">
+      <div className="flex items-center gap-3 mb-2">
         <EarTagBadge identifiant={lapin.identifiant} sexe={lapin.sexe} />
         <h1 className="text-xl md:text-2xl font-bold">{lapin.nom || 'Sans nom'}</h1>
       </div>
+
+      {lapin.stade && (
+        <div className="mb-3">
+          <Badge ton={TON_STADE[lapin.stade]}>{LABEL_STADE[lapin.stade]}</Badge>
+        </div>
+      )}
 
       {error && (
         <p className="text-sm text-danger bg-danger/10 rounded-control px-3 py-2 mb-3">{error}</p>
       )}
 
       <div className="md:grid md:grid-cols-2 md:gap-8 md:items-start">
-        <Card className="mb-8 md:mb-0">
-          <form action={modifierAvecId} className="flex flex-col gap-3">
-            <Input name="nom" type="text" defaultValue={lapin.nom ?? ''} placeholder="Nom" />
-            <Input name="race" type="text" defaultValue={lapin.race ?? ''} placeholder="Race" />
-            <Input name="date_naissance" type="date" defaultValue={lapin.date_naissance ?? ''} />
-            <Input name="poids_actuel" type="number" step="0.1" defaultValue={lapin.poids_actuel ?? ''} placeholder="Poids (kg)" />
-            <Input name="couleur" type="text" defaultValue={lapin.couleur ?? ''} placeholder="Couleur" />
-            <Input name="numero_cage" type="text" defaultValue={lapin.numero_cage ?? ''} placeholder="Numéro de cage" />
+        <div className="mb-8 md:mb-0">
+          <Card>
+            <form action={modifierAvecId} className="flex flex-col gap-3">
+              <Input name="nom" type="text" defaultValue={lapin.nom ?? ''} placeholder="Nom" />
+              <Input name="race" type="text" defaultValue={lapin.race ?? ''} placeholder="Race" />
+              <Input name="date_naissance" type="date" defaultValue={lapin.date_naissance ?? ''} />
+              <Input name="poids_actuel" type="number" step="0.1" defaultValue={lapin.poids_actuel ?? ''} placeholder="Poids (kg)" />
+              <Input name="couleur" type="text" defaultValue={lapin.couleur ?? ''} placeholder="Couleur" />
+              <Input name="numero_cage" type="text" defaultValue={lapin.numero_cage ?? ''} placeholder="Numéro de cage" />
 
-            <Field label="Âge 1ère saillie prévu (mois)">
-              <Input name="age_premiere_saillie" type="number" defaultValue={lapin.age_premiere_saillie ?? ''} />
-            </Field>
+              <Field label="Âge 1ère saillie prévu (mois)">
+                <Input name="age_premiere_saillie" type="number" defaultValue={lapin.age_premiere_saillie ?? ''} />
+              </Field>
 
-            <Field label="Statut">
-              <Select name="statut" defaultValue={lapin.statut}>
-                <option value="actif">Actif</option>
-                <option value="vendu">Vendu</option>
-                <option value="decede">Décédé</option>
-              </Select>
-            </Field>
+              <Field label="Statut">
+                <Select name="statut" defaultValue={lapin.statut}>
+                  <option value="actif">Actif</option>
+                  <option value="vendu">Vendu</option>
+                  <option value="decede">Décédé</option>
+                </Select>
+              </Field>
 
-            <Textarea name="notes" defaultValue={lapin.notes ?? ''} placeholder="Notes" rows={3} />
+              <Textarea name="notes" defaultValue={lapin.notes ?? ''} placeholder="Notes" rows={3} />
 
-            <Button type="submit" variante="primaire" className="mt-1">
-              Enregistrer les modifications
-            </Button>
-          </form>
+              <Button type="submit" variante="primaire" className="mt-1">
+                Enregistrer les modifications
+              </Button>
+            </form>
 
-          <form action={supprimerAvecId} className="mt-3">
-            <Button type="submit" variante="danger" className="w-full">
-              Supprimer ce lapin
-            </Button>
-          </form>
-        </Card>
+            {lapin.stade !== 'reproducteur' && (
+              <form action={marquerReproducteurAvecId} className="mt-3">
+                <Button type="submit" variante="secondaire" className="w-full">
+                  Marquer comme reproducteur
+                </Button>
+              </form>
+            )}
+
+            <form action={supprimerAvecId} className="mt-3">
+              <Button type="submit" variante="danger" className="w-full">
+                Supprimer ce lapin
+              </Button>
+            </form>
+          </Card>
+        </div>
 
         <div>
           <h2 className="text-sm font-semibold text-ink-soft mb-3">Historique</h2>

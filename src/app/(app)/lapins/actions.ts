@@ -88,3 +88,17 @@ export async function rechercherLapins(terme: string) {
 
   return data ?? []
 }
+
+export async function marquerReproducteur(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('lapins').update({ stade: 'reproducteur' }).eq('id', id)
+
+  if (error) {
+    redirect(`/lapins/${id}?error=${encodeURIComponent(error.message)}`)
+  }
+
+  revalidatePath('/lapins')
+  revalidatePath(`/lapins/${id}`)
+  revalidatePath('/dashboard')
+  redirect(`/lapins/${id}`)
+}
